@@ -1,3 +1,24 @@
+=rounded(!radius = 8px)
+  :-webkit-border-radius = !radius
+  :-moz-border-radius = !radius
+
+=box-shadow(!distance = 1px, !radius = 5px)
+  :-webkit-box-shadow = 0px !distance !radius rgba(32, 32, 32, 0.6)
+
+=min-rect(!width = 120px, !height = 160px)
+  :min-width = !width
+  :min-height = !height
+
+=rect(!width = 320px, !height = 480px)
+  :width = !width
+  :height = !height
+
+=frame(!top = 0, !right = 0, !bottom = 0, !left = 0)
+  :top = !top
+  :right = !right
+  :bottom = !bottom
+  :left = !left
+
 body
   font-family: Helvetica
   font-size: 14pt
@@ -12,186 +33,214 @@ div
 h1
   font-size: 130%
 
-#screens
-  //-webkit-transform: scale(0.5)
-
-.screen
-  -webkit-border-radius: 6px
-  -webkit-box-shadow: 0px 1px 5px rgba(32, 32, 32, 0.4)
-  overflow: none
-  margin: 25px
-  background: #eee
-  float: left
-
-.rounded
-  -webkit-border-radius: 8px
-  -moz-border-radius: 8px
-  border: 4px solid #ddd
+/* Interface styling */
 
 
-.selected
-  border: 4px solid #f3663f
+#inspector, #canvas, #toolbar
+  :position fixed
+
+#inspector
+  +rounded(12px)
+  +box-shadow(2px, 6px)
+  +min-rect
+  :background-color rgba(0, 0, 0, 0.7)
+  :z-index 100
+
+#canvas
+  +frame
+  :margin 10px 10px 50px 10px
+
+#toolbar
+  +frame("auto")
+  :height 20px
+  :background-color #dee4ea
+  :border-top 1px solid #999
+  :z-index 101
+  :padding 10px
+  button
+    :float right
+
+/* iPhone Elements */  
+
+#canvas
+  #screen_set
+    :border 1px solid red
+    :padding 20px
+    :position fixed
+
+  .screen
+    +rounded(6px)
+    +box-shadow
+    +rect
+
+    :margin 15px
+    overflow: none
+    background: #eee
+    float: left
+
+  .selected
+    border: 4px solid #f3663f
 
 
-.status-bar, .toolbar, .navigation-bar, .content
-  border: none
+  .status-bar, .toolbar, .navigation-bar, .content
+    border: none
 
 
-.navigation-bar, .content
-  border-bottom: 1px solid #2d3642
+  .navigation-bar, .content
+    border-bottom: 1px solid #2d3642
 
 
-.navigation-bar, .toolbar
-  height: 42px
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#b0bccd), to(#6d84a2))
-  border-top: 1px solid #cdd5df
-  color: #fff
-  text-shadow: 0px -1px 0px #555
-  text-align: center
-  line-height: 42px
+  .navigation-bar, .toolbar
+    height: 42px
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#b0bccd), to(#6d84a2))
+    border-top: 1px solid #cdd5df
+    color: #fff
+    text-shadow: 0px -1px 0px #555
+    text-align: center
+    line-height: 42px
 
 
-.status-bar
-  height: 19px
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eff6f9), to(#bdc5c9))
-  color: #111
-  border-bottom: 1px solid #2d3642
-  -webkit-border-top-left-radius: 6px
-  -webkit-border-top-right-radius: 6px
-  text-align: center
-  line-height: 19px
-  font-weight: bold
-  font-size: 10pt
+  .status-bar
+    height: 19px
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eff6f9), to(#bdc5c9))
+    color: #111
+    border-bottom: 1px solid #2d3642
+    -webkit-border-top-left-radius: 6px
+    -webkit-border-top-right-radius: 6px
+    text-align: center
+    line-height: 19px
+    font-weight: bold
+    font-size: 10pt
 
 
-.navigation-bar > .title
-  margin: 0 90px
+  .navigation-bar > .title
+    margin: 0 90px
 
 
-.toolbar
-  height: 42px
-  bottom: 0
-  padding: 0 8px
-  -webkit-border-bottom-left-radius: 6px
-  -webkit-border-bottom-right-radius: 6px
+  .toolbar
+    height: 42px
+    bottom: 0
+    padding: 0 8px
+    -webkit-border-bottom-left-radius: 6px
+    -webkit-border-bottom-right-radius: 6px
 
 
-.keyboard
-  background: url(../images/keyboard.png)
-  width: 320px
-  height: 215px
+  .keyboard
+    background: url(../images/keyboard.png)
+    width: 320px
+    height: 215px
 
 
-.button, .back-button
-  color: #fff
-  font-size: 14px
-  text-shadow: 0px -1px 0px #555
-  height: 31px
-  line-height: 31px
-  margin: 6px
-  padding: 0 2px
+  .button, .back-button
+    color: #fff
+    font-size: 14px
+    text-shadow: 0px -1px 0px #555
+    height: 31px
+    line-height: 31px
+    margin: 6px
+    padding: 0 2px
 
 
-.button
-  -webkit-border-image: url(../images/button-bg.png) 0 9 0 10 stretch stretch
-  border-width: 0 9px 0 10px
+  .button
+    -webkit-border-image: url(../images/button-bg.png) 0 9 0 10 stretch stretch
+    border-width: 0 9px 0 10px
 
 
-.borderless-button
-  font-size: 24px
-  padding: 0 12px
-  font-weight: bold
+  .borderless-button
+    font-size: 24px
+    padding: 0 12px
+    font-weight: bold
 
 
-.back-button
-  -webkit-border-image: url(../images/back-button-bg.png) 0 7 0 14 stretch stretch
-  border-width: 0 7px 0 14px
+  .back-button
+    -webkit-border-image: url(../images/back-button-bg.png) 0 7 0 14 stretch stretch
+    border-width: 0 7px 0 14px
 
 
-.disclosure
-  width: 13px
-  height: 19px
-  margin: 13px 0px 10px 6px
-  float: right
-  background: url(../images/disclosure.png)
+  .disclosure
+    width: 13px
+    height: 19px
+    margin: 13px 0px 10px 6px
+    float: right
+    background: url(../images/disclosure.png)
 
 
-.table-search
-  height: 42px
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e0e4e7), to(#b4bec6))
-  border-top: 1px solid #f1f3f4
-  border-bottom: 1px solid #717d85
+  .table-search
+    height: 42px
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e0e4e7), to(#b4bec6))
+    border-top: 1px solid #f1f3f4
+    border-bottom: 1px solid #717d85
   
-.table-search input
-  margin: 9px
-  font-size: 18px
-  width: 300px
+  .table-search input
+    margin: 9px
+    font-size: 18px
+    width: 300px
 
 
-.grouped-table-cell, .table-cell
-  height: 43px
-  background: #fff
-  font-weight: bold
-  line-height: 43px
-  padding: 0 18px
-  font-size: 18px
+  .grouped-table-cell, .table-cell
+    height: 43px
+    background: #fff
+    font-weight: bold
+    line-height: 43px
+    padding: 0 18px
+    font-size: 18px
 
 
-.grouped-table-view
-  background: url(../images/grouped-table-bg.png)
-  padding-top: 1px
+  .grouped-table-view
+    background: url(../images/grouped-table-bg.png)
+    padding-top: 1px
 
 
-.grouped-table-header
-  margin-top: 7px
-  color: #4c566c
-  padding-left: 20px
-  text-shadow: 0px 1px 0px #eee
-  line-height: 25px
-  font-weight: normal
-  height: 25px
-  font-size: 18px
+  .grouped-table-header
+    margin-top: 7px
+    color: #4c566c
+    padding-left: 20px
+    text-shadow: 0px 1px 0px #eee
+    line-height: 25px
+    font-weight: normal
+    height: 25px
+    font-size: 18px
 
 
-.first-grouped-table-cell
-  margin-top: 7px
-  -webkit-border-top-left-radius: 14px
-  -webkit-border-top-right-radius: 14px
-  border-top: 1px solid #aaa
+  .first-grouped-table-cell
+    margin-top: 7px
+    -webkit-border-top-left-radius: 14px
+    -webkit-border-top-right-radius: 14px
+    border-top: 1px solid #aaa
 
 
-.last-grouped-table-cell
-  margin-bottom: 14px
-  -webkit-border-bottom-left-radius: 14px
-  -webkit-border-bottom-right-radius: 14px
+  .last-grouped-table-cell
+    margin-bottom: 14px
+    -webkit-border-bottom-left-radius: 14px
+    -webkit-border-bottom-right-radius: 14px
 
 
-.grouped-table-cell
-  margin-left: 10px
-  margin-right: 10px
-  border-bottom: 1px solid #aaa
-  border-left: 1px solid #aaa
-  border-right: 1px solid #aaa
+  .grouped-table-cell
+    margin-left: 10px
+    margin-right: 10px
+    border-bottom: 1px solid #aaa
+    border-left: 1px solid #aaa
+    border-right: 1px solid #aaa
 
 
-.table-view
-  background: url(../images/table-bg.png)
-  overflow: none
+  .table-view
+    background: url(../images/table-bg.png)
+    overflow: none
 
 
-.table-header
-  color: #fff
-  padding-left: 20px
-  text-shadow: 0px 1px 0px #555
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8))
-  border-top: 1px solid #a5b1ba
-  border-bottom: 1px solid #989ea4
-  line-height: 20px
-  font-weight: normal
-  height: 20px
-  font-size: 17px
+  .table-header
+    color: #fff
+    padding-left: 20px
+    text-shadow: 0px 1px 0px #555
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8))
+    border-top: 1px solid #a5b1ba
+    border-bottom: 1px solid #989ea4
+    line-height: 20px
+    font-weight: normal
+    height: 20px
+    font-size: 17px
 
 
-.table-cell
-  border-bottom: 1px solid #ddd
-  -webkit-box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.4)
+  .table-cell
+    border-bottom: 1px solid #ddd
+    -webkit-box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.4)

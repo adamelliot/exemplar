@@ -1,255 +1,185 @@
 /**
- * Mars landed, I made something to make life a little easier.
+ * Jupiter how I miss you; a lovely glow has alway consumed me.
+ * 
+ * BTW: This code will work in modern browsers (Gecko 1.9.1+, Webkit 532+)
+ * it's not meant to be backwards compatible, lets levereage new tech K?
+ * 
+ * Copyright (c) 2009 Adam Elliot
  */
 
-var Exemplar = window.Exemplar || {};
-
-/**
- * Basic drawing div, a screen is a stack of these.
- */
-Exemplar.Screen = function(config) {
+var Exemplar = function() {
+  
   /**
-   * Generate targetable id
+   * Draws an arrow in a canvas element from one point to another and returns
+   * a canvas element it's drawn in. By default it's attached to the container
+   * element, unless specified false.
+   * 
+   * If container is null it's drawn in the body. Container is a jQuery
+   * selector.
    */
-  var newId = function() {
-    var id = 666;
+  var drawArrow = function(x1, y1, x2, y2, container) {
+    var canvas = $("<canvas></canvas>");
+    if (container === undefined) container = $("body");
+    else if (container === false) container = null;
+    else container = $(container);
 
-    newId = function() {
-      return "screen_" + id++;
-    };
-  };
-
-  /**
-   * Base object for screen stack
-   */
-  var Base = function() {
-    var id = newId();
-    var container = $("<div></div>");
+    var x = Math.min(x1, x2);
+    var y = Math.min(y1, y2);
     
-    return {
-      get id() {
-        return id;
-      },
-      get container() {
-        return container;
-      },
+    x1 -= x; x2 -= x;
+    y1 -= y; y2 -= y;
 
-      set height(val) {
-        container.css("height", val);
-      }
-    };
+    if (container) container.append(canvas);
+
+    canvas.attr("width", Math.abs(x2 - x1));
+    canvas.attr("height", Math.abs(y2 - y1));
+
+    var ctx = canvas.get(0).getContext('2d');
+
+    ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    return canvas;
   };
   
-  var BarButton = function(config) {
-    config = config || {};
+  /**
+   * Represents an html element on the page. Everything that has JS tied to it
+   * is an Element, which is pretty much everything in the application.
+   * 
+   * container can be a jQuery selector, a jQuery object, or another Element
+   */
+  var Element = function(id, className, container) {
+    var element = $("<div></div>");
+    var children = [];
 
-    var base = new Base;
-    var html = base.container;
-    var className = "";
+    if (id) element.attr("id", id);
+    if (className) element.attr("class", className);
 
-    switch(config.type) {
-      case "back":
-        className = "back-button";
-        break;
-      case "borderless":
-        className = "borderless-button";
-        break;
-      default:
-        className = "button";
-        break;
+    if (container) {
+      if (container instanceof jQuery) container.append(element);
+      else if (container instanceof this.constructor) container.$.append(element);
+      else if (typeof container == 'string') jQuery(container).append(element);
     }
 
-    html.attr("class", className);
-    html.text(config.title || "");
-
-    html.css({float: (config.right === true ? "right" : "left")});
-
-    return base;
-  };
-  
-  var Keyboard = function(config) {
-    var base = new Base;
-    var html = base.container;
-
-    html.attr("class", "keyboard");
-
-    return base;
-  };
-  
-  var StatusBar = function() {
-    var base = new Base;
-    var html = base.container;
-
-    html.attr("class", "status-bar");
-    html.text("2:71");
-
-    return base;
-  };
-
-  var NavigationBar = function(config) {
-    config = config || {};
-    config.buttons = config.buttons || [];
-
-    var base = new Base;
-    var html = base.container;
-    html.attr("class", "navigation-bar");
-
-    if (config.buttons[0])
-      html.append((new BarButton(config.buttons[0])).container);
-
-    if (config.buttons[1]) {
-      config.buttons[1].right = true;
-      html.append((new BarButton(config.buttons[1])).container);
-    }
-
-    html.append("<div class='title'>" + (config.title || "?") + "</div>");
-
-    return base;
-  };
-
-  var Toolbar = function(config) {
-    config = config || {};
-    config.buttons = config.buttons || [];
-    
-    var base = new Base;
-    var html = base.container;
-    html.attr("class", "toolbar");
-
-    for (var i = 0; i < config.buttons.length; i++)
-      html.append((new BarButton(config.buttons[i])).container);
-
-    return base;
-  };
-
-  var TableSearch = function(config) {
-    var base = new Base;
-    var html = base.container;
-
-    html.attr("class", "table-search");
-    html.html("<input type='search' placeholder='Search' autosave='iphone' results='5' />");
-
-    return base;
-  };
-
-  var TableHeader = function(config) {
-    var base = new Base;
-    var html = base.container;
-
-    html.attr("class", config.grouped ? "grouped-table-header" : "table-header");
-    html.text(config.text || "?")
-
-    return base;
-  };
-
-  var TableCell = function(config) {
-    var base = new Base;
-    var html = base.container;
-
-    html.attr("class", config.grouped ? "grouped-table-cell" : "table-cell");
-    html.text(config.text || "?");
-    console.log(config.disclosure);
-    if (config.disclosure != false)
-      html.append("<div class='disclosure'></div>");
-    
-    return base;
-  };
-
-  var TableView = function(config) {
-    config = config || {};
-
-    var base = new Base;
-    var html = base.container;
-    html.attr("class", config.grouped ? "grouped-table-view" : "table-view");
-
-    html.css({height: config.height});
-    
-    var addData = function(data, grouped, disclosure) {
-      for (var i = 0; i < data.length; i++) {
-        var cell = new TableCell({grouped: grouped, text: data[i], disclosure:disclosure});
-        
-        if (config.grouped) {
-          if (i == 0)
-            cell.container.attr("class", cell.container.attr("class") + " first-grouped-table-cell");
-
-          if (i == data.length - 1)
-            cell.container.attr("class", cell.container.attr("class") + " last-grouped-table-cell");
-        }
-
-        html.append(cell.container);
-      }
+    this.addElement = function(child) {
+      children.push(child);
+      element.append(child.$);
     };
 
-    if (config.search ===  true)
-      html.append((new TableSearch()).container);
-
-    if (config.data instanceof Array)
-      addData(config.data, config.grouped, config.disclosure);
-    else
-      for (var key in config.data) {
-        var header = new TableHeader({grouped: config.grouped, text: key});
-        html.append(header.container);
-        addData(config.data[key], config.grouped, config.disclosure);
-      }
-
-    return base;
-
+    /**
+     * Generate the html node for this view and return a jQuery object.
+     */
+    this.__defineGetter__("$", function() {
+      return element;
+    });
   };
 
-  var Content = function(config) {
+  /**
+   * Heirachry for screens and views
+   */
+  var View = function(config, className) {
+    this.__proto__ = new Element(null, className);
+
     config = config || {};
 
-    var base = new Base;
-    var html = base.container;
-    html.attr("class", "content");
-
-    var tableView = new TableView({
-      search: config.search,
-      height: config.height,
-      grouped: config.grouped,
-      data: config.data,
-      disclosure: config.disclosure
+    /**
+     * R/O Access to the config vars
+     */
+    this.__defineGetter__("config", function() {
+      return config;
     });
 
-    html.append(tableView.container);
+    /**
+     * Used to describe to the inspector what options this view has.
+     * None by default.
+     */
+    this.builder = function() {
+      return {};
+    };
 
-    return base;
+    /**
+     * Generally called from the inspector to set new config vars.
+     */
+    this.update = function() {
+
+    };
   };
 
   var Screen = function(config) {
-    var baseHeight = 320;
-    
-    config = config || {};
-
-    var contentHeight = 480 - 20 - (config.navigationBar ? 45 : 0) -
-      (config.toolbar ? 43 : 0) - (config.keyboard === true ? 216 : 0);
-    config.content = config.content || {};
-    config.content.height = contentHeight;
-    
-    var statusBar = new StatusBar(config.statusBar);
-    var navigationBar = new NavigationBar(config.navigationBar);
-    var content = new Content(config.content);
-    var toolbar = new Toolbar(config.toolbar);
-    var keyboard = new Keyboard();
-
-    var base = new Base;
-    var html = base.container;
-
-    html.attr("class", "screen");
-    config = config || {};
-
-    html.css({
-      width: 320,
-      height: 480
-    });
-    
-    html.append(statusBar.container);
-    if (config.navigationBar) html.append(navigationBar.container);
-    html.append(content.container);
-    if (config.toolbar) html.append(toolbar.container);
-    if (config.keyboard === true) html.append(keyboard.container);
-
-    return base;
+    this.__proto__ = new View(config, 'screen');
   };
   
-  return new Screen(config);
+  /**
+   * The collection of screens.
+   */
+  var ScreenSet = function(root) {
+    root = root || "body";
+    this.__proto__ = new Element('screen_set', null, root);
+
+    /**
+     * Adds a new Screen to the Canvas
+     */
+    this.createScreen = function() {
+      this.addElement(new Screen());
+    };
+  };
+
+  /**
+   * Interface Elements
+   */
+  var Interface = (function() {
+    var root;
+
+    /**
+     * The little widget for customizing the screens
+     */
+    var Inspector = function() {
+      this.__proto__ = new Element('inspector', null, root);
+      this.$.draggable({containment: '#canvas'});
+    };
+    
+    var Toolbar = function(screenSet) {
+      var addScreen = $("<button>Add Screen</button>");
+      
+      this.__proto__ = new Element('toolbar', null, root);
+      this.$.append(addScreen);
+      
+      addScreen.click(function() {
+        screenSet.createScreen();
+      });
+    };
+
+    /**
+     * Where all the screens are displayed.
+     */
+    var Canvas = function() {
+      this.__proto__ = new Element('canvas', null, root);
+      this.screenSet = new ScreenSet(this);
+      
+      var screens = $("<div></div>");
+      screens.attr("id", "screens");
+
+      this.$.append(screens);
+    };
+
+    var Klass = function(_root) {
+      root = _root || "body";
+
+      var canvas = new Canvas();
+      var toolbar = new Toolbar(canvas.screenSet);
+      var inspector = new Inspector();
+    };
+
+    return Klass;
+  })();
+
+  var interface = new Interface();
 };
+
