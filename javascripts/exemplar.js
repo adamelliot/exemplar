@@ -7,8 +7,40 @@
  * Copyright (c) 2009 Adam Elliot
  */
 
+ /**
+  * Some useful string manipulations. Lets us convert from the Javascript
+  * name to the css class name to the human name.
+  */
+String.prototype.camelize = function() {
+  return this.charAt(0).toUpperCase() +
+    this.substring(1).replace(/[\-\_]([a-z])/ig, function(z, a) {
+      return a.toUpperCase();
+    });
+};
+String.prototype.underscore = function() {
+  return (this.charAt(0) + this.substring(1).replace(/([A-Z])/g, function(z, a) {
+    return "_" + a;
+  })).replace(/([\-])/g, "_").toLowerCase();
+};
+String.prototype.hypenate = function() {
+  return (this.charAt(0) + this.substring(1).replace(/([A-Z])/g, function(z, a) {
+    return "-" + a;
+  })).replace(/([\_])/, "-").toLowerCase();
+};
+String.prototype.humanize = function() {
+  return this.replace(/([\_\-])/g, function(z, a) {
+    return " ";
+  }).replace(/(^[a-z]| [a-z])/g, function(z, a) {
+    return a.toUpperCase();
+  });
+};
+
 var Exemplar = function() {
   
+  // This collection is used to dynamically create view objects.
+  var views = {};
+  var interface;
+
   /**
    * Draws an arrow in a canvas element from one point to another and returns
    * a canvas element it's drawn in. By default it's attached to the container
@@ -82,60 +114,167 @@ var Exemplar = function() {
   };
 
   /**
-   * Heirachry for screens and views
+   * The base view should understand how most views are structured, and based
+   * on the config set will draw things how we want them. The sub classes
+   * mostly just provide the potential options so the inspector can set the
+   * right style sheets and provide the right options.
    */
-  var View = function(config, className) {
+  views.View = function(className, config, builder) {
     this.__proto__ = new Element(null, className);
+    var self = this;
+    var subviews = {};
 
-    config = config || {};
+    config  = config  || {};
+    builder = builder || {};
+
+    // Ensure the appropriate sections exists
+    config.toggles  = config.toggles  || {};
+    config.labels   = config.labels   || {};
+    config.configs  = config.configs  || {};
+    
+    builder.types   = builder.types   || {};
+    builder.toggles = builder.toggles || [];
+    builder.labels  = builder.labels  || [];
 
     /**
-     * R/O Access to the config vars
+     * R/O Access to the config block
      */
-    this.__defineGetter__("config", function() {
-      return config;
-    });
+    this.__defineGetter__("config", function() { return config; });
 
     /**
      * Used to describe to the inspector what options this view has.
      * None by default.
      */
-    this.builder = function() {
-      return {};
-    };
+    this.__defineGetter__("builder", function() { return builder; });
 
     /**
      * Generally called from the inspector to set new config vars.
      */
     this.update = function() {
+      var insert = this.$.prepend, target = this.$, name;
 
+      for (var i = 0; i < builder.toggles.length; i++) {
+        name = builder.toggles[i];
+
+        if (subviews[name]) {
+          if (config.toggles[name] !== true) {
+            subviews[name].destroy();
+            subviews[name] = undefined;
+          }
+          else {
+            target = subviews[name].$;
+            insert = subviews[name].$.after;
+          }
+        } else {
+          if (config.toggles[name] === true) {
+            var className = builder.types[name] || name;
+            var type = views[className.camelize()];
+            
+            if (type) {
+              var view = subviews[name] = new type(config.configs[className])
+              insert.call(target, view.$);
+              target = view.$;
+              insert = view.$.after;
+            }
+          }
+        }
+      }
     };
+
+    /**
+     * Remove the view and cleanup anything that needs to be cleaned.
+     */
+    this.destroy = function() {
+      this.$.remove();
+    };
+
+    /**
+     * Used to populate the inspector
+     */
+    this.$.click(function(event) {
+      if (self.builder === undefined) return;
+
+      $(".selected").removeClass("selected");
+      $(this).addClass("selected");
+      
+      interface.inspectView(self);
+      
+      event.stopPropagation();
+    });
+
+    this.update();
   };
 
-  var Screen = function(config) {
-    this.__proto__ = new View(config, 'screen');
+  views.StatusBar = function() {
+    this.__proto__ = new views.View('status-bar');
+  };
+  
+  views.Keyboard = function() {
+    this.__proto__ = new views.View('keyboard');
+  };
+  
+  views.NavigationBar = function(config) {
+    this.__proto__ = new views.View('navigation-bar', {
+      toggles: {back: true},
+      labels:  {title: '[Rock Bottom]'}
+    }, {
+      types:   {back: 'toolbar-button', edit: 'toolbar-button'},
+      toggles: ['back', 'edit'],
+      labels:  ['title']
+    });
+
+    var title = $("<div class='title'>?</div>");
+    this.$.append(title);
+  };
+  
+  views.Toolbar = function(config) {
+    this.__proto__ = new views.View('toolbar');
+  };
+
+  views.Window = function(config) {
+    this.__proto__ = new views.View('window', {
+      toggles: {'status-bar': true, 'navigation-bar': true}
+    }, {
+      toggles: ['status-bar', 'navigation-bar', 'toolbar', 'keyboard']
+    });
   };
   
   /**
    * The collection of screens.
    */
-  var ScreenSet = function(root) {
+  var Application = function(root) {
     root = root || "body";
-    this.__proto__ = new Element('screen_set', null, root);
+    this.__proto__ = new Element('application', null, root);
+
+    var scale = 1.0;
+
+    this.$.draggable();
+
+    this.__defineSetter__("scale", function(val) {
+      val = parseFloat(val);
+      if (isNaN(val)) return;
+
+      scale = val;
+
+      this.$.css("-webkit-transform", "scale(" + scale + ")");
+    });
+    this.__defineGetter__("scale", function() { return scale; });
 
     /**
      * Adds a new Screen to the Canvas
      */
-    this.createScreen = function() {
-      this.addElement(new Screen());
+    this.createWindow = function() {
+      this.addElement(new views.Window());
     };
   };
 
   /**
    * Interface Elements
    */
-  var Interface = (function() {
-    var root;
+  Interface = function(root) {
+    root = root || "body";
+
+    var application, canvas, toolbar, inspector;
 
     /**
      * The little widget for customizing the screens
@@ -143,16 +282,64 @@ var Exemplar = function() {
     var Inspector = function() {
       this.__proto__ = new Element('inspector', null, root);
       this.$.draggable({containment: '#canvas'});
+
+      var view;
+      
+      /**
+       * Draw the toggle buttons
+       */
+      var drawToggles = function(toggles) {
+        for (var i = 0; i < toggles.length; i++) {
+          var id = "toggle_" + toggles[i].underscore();
+          var html = $("<div></div>");
+          var input = $("<input type='checkbox' id='" + id + "' />");
+          var label = $("<label for='" + id + "'>" + toggles[i].humanize() + "</label>");
+          
+          input.click((function() {
+            var name = toggles[i];
+            return function() {
+              view.config.toggles[name] = !view.config.toggles[name];
+              view.update();
+            }; 
+          })());
+
+          if (view.config.toggles[toggles[i]] === true) input.attr('checked', true);
+
+          html.append(input);
+          html.append(label);
+
+          this.$.append(html);
+        }
+      };
+
+      var populate = function() {
+        if (!view || !view.builder) return;
+        this.$.empty();
+
+        drawToggles.call(this, view.builder.toggles);
+      };
+
+      this.__defineSetter__('view', function(val) {
+        view = val;
+        populate.call(this);
+      });
     };
     
-    var Toolbar = function(screenSet) {
-      var addScreen = $("<button>Add Screen</button>");
-      
+    var Toolbar = function() {
+      var addScreen = $("<button class='add-screen'>Add Screen</button>");
+      var scale = $("<input type='range' class='scale' value='100' />");
+
       this.__proto__ = new Element('toolbar', null, root);
+
+      this.$.append(scale);
       this.$.append(addScreen);
       
       addScreen.click(function() {
-        screenSet.createScreen();
+        application.createWindow();
+      });
+
+      scale.change(function() {
+        application.scale = (parseFloat($(this).val()) + 25) / 125;
       });
     };
 
@@ -161,7 +348,6 @@ var Exemplar = function() {
      */
     var Canvas = function() {
       this.__proto__ = new Element('canvas', null, root);
-      this.screenSet = new ScreenSet(this);
       
       var screens = $("<div></div>");
       screens.attr("id", "screens");
@@ -169,17 +355,18 @@ var Exemplar = function() {
       this.$.append(screens);
     };
 
-    var Klass = function(_root) {
-      root = _root || "body";
-
-      var canvas = new Canvas();
-      var toolbar = new Toolbar(canvas.screenSet);
-      var inspector = new Inspector();
+    this.inspectView = function(view) {
+      inspector.view = view;
     };
 
-    return Klass;
-  })();
+    canvas = new Canvas();
+    toolbar = new Toolbar(canvas.screenSet);
+    inspector = new Inspector();
 
-  var interface = new Interface();
+    application = new Application(canvas);
+    application.createWindow();
+  };
+
+  interface = new Interface();
 };
 
