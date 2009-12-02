@@ -344,12 +344,56 @@ var Exemplar = function() {
     this.__proto__ = new views.View('table-view-search', config);
     this.$.append("<input type='search' placeholder='Search' autosave='iphone' results='5' />");
   };
+  
+  views.TableViewGroup = function(config) {
+    this.__proto__ = new views.View('table-view', $.extend({
+      toggles: {'table-view-header': true, 'table-view-footer': true}
+    }, config), {
+      toggles: ['table-view-header', 'data-views', 'table-view-footer'],
+      dataType: 'table-view-cell'
+    });
+  };
+
+  views.TableViewHeader = function(config) {
+    this.__proto__ = new views.View('table-view-header', $.extend({
+      labels: {title: 'Header'}
+    }, config), {
+      labels: ['title']
+    });
+
+    this.$.append("<div class='title'></div>");
+    this.update();
+  };
+
+  views.TableViewCell = function(config) {
+    this.__proto__ = new views.View('table-view-cell', $.extend({
+      labels: {title: 'Table View Cell'}
+    }, config), {
+      labels: ['title']
+    });
+
+    this.$.append("<div class='title'></div>");
+    this.update();
+  };
+
+  views.TableViewFooter = function(config) {
+    this.__proto__ = new views.View('table-view-footer', $.extend({
+      labels: {title: 'Footer'}
+    }, config), {
+      labels: ['title']
+    });
+
+    this.$.append("<div class='title'></div>");
+    this.update();
+  };
 
   views.TableView = function(config) {
     this.__proto__ = new views.View('table-view', $.extend({
       autoSize: true
     }, config), {
-      toggles: ['table-view-search']
+      toggles: ['table-view-search'],
+      dataType: 'table-view-group',
+      options: {style: ['plain-table', 'grouped-table']}
     });
   };
 
@@ -379,7 +423,6 @@ var Exemplar = function() {
     });
 
     this.$.append("<div class='title'></div>");
-
     this.update();
   };
 

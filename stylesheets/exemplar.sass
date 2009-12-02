@@ -133,6 +133,7 @@ h1
 #canvas
   #application
     :position fixed
+    :white-space nowrap
     :left 200px
     :top 30px
     :border 1px dashed #888
@@ -235,14 +236,12 @@ h1
     :-webkit-border-image url(../images/back-button-bg.png) 0 7 0 14 stretch stretch
     :border-width 0 7px 0 14px
 
-  /* Table stuff */
 
-  .disclosure
-    width: 13px
-    height: 19px
-    margin: 13px 0px 10px 6px
-    float: right
-    background: url(../images/disclosure.png)
+  /* Table Stuff */
+
+  .table-view
+    background: url(../images/table-bg.png)
+    overflow: none
 
   .table-view-search
     height: 42px
@@ -254,13 +253,42 @@ h1
       font-size: 18px
       width: 300px
 
-  .grouped-table-cell, .table-cell
+  .table-view-group
+    +box-shadow(2px, 3px, 32, 0.4)
+
+  .table-view-header, .table-view-footer
+    color: #fff
+    padding-left: 20px
+    text-shadow: 0px 1px 0px #555
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8))
+    border-top: 1px solid #a5b1ba
+    border-bottom: 1px solid #989ea4
+    line-height: 20px
+    font-weight: normal
+    height: 20px
+    font-size: 17px
+    :margin-bottom 4px
+
+  .table-view-cell
+    border-bottom: 1px solid #ddd
     height: 43px
     background: #fff
     font-weight: bold
     line-height: 43px
     padding: 0 18px
     font-size: 18px
+    
+
+  /* Old Table stuff */
+
+  .disclosure
+    width: 13px
+    height: 19px
+    margin: 13px 0px 10px 6px
+    float: right
+    background: url(../images/disclosure.png)
+
+  //.grouped-table-cell, .table-cell
 
 
   .grouped-table-view
@@ -298,25 +326,3 @@ h1
     border-bottom: 1px solid #aaa
     border-left: 1px solid #aaa
     border-right: 1px solid #aaa
-
-
-  .table-view
-    background: url(../images/table-bg.png)
-    overflow: none
-
-  .table-header
-    color: #fff
-    padding-left: 20px
-    text-shadow: 0px 1px 0px #555
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8))
-    border-top: 1px solid #a5b1ba
-    border-bottom: 1px solid #989ea4
-    line-height: 20px
-    font-weight: normal
-    height: 20px
-    font-size: 17px
-
-
-  .table-cell
-    border-bottom: 1px solid #ddd
-    -webkit-box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.4)
