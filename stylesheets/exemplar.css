@@ -27,7 +27,7 @@ h1 {
     text-shadow: 0px -1px 2px rgba(0, 0, 0, 1.0);
     color: #fff;
     font-size: 11pt; }
-  #inspector input {
+  #inspector input, #inspector select {
     outline: none; }
   #inspector input[type=checkbox] {
     height: 14px;
@@ -75,7 +75,7 @@ h1 {
 
 /* iPhone Elements */
 #canvas {
-  /* Buttons */
+  /* Toolbar Button */
   /* Table stuff */ }
   #canvas #application {
     position: fixed;
@@ -136,7 +136,11 @@ h1 {
     width: 320px;
     height: 215px; }
   #canvas .toolbar-button {
-    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8ea4c1), to(#4a6c9b), color-stop( 0.5, #5777a2 ), color-stop( 0.5, #476999 ) );
+    height: 27px;
+    line-height: 27px;
+    padding: 0 6px;
+    float: left; }
+  #canvas .bordered-button, #canvas .done-button {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.4);
@@ -144,18 +148,23 @@ h1 {
     text-shadow: 0px -1px 0px #555;
     color: #fff;
     text-align: center;
-    min-width: 30px;
-    font-size: 14px;
-    height: 27px;
-    line-height: 27px;
     margin: 6px;
-    padding: 0 6px;
-    float: left; }
-  #canvas .borderless-button {
+    min-width: 30px;
+    font-size: 14px; }
+  #canvas .bordered-button {
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8ea4c1), to(#4a6c9b), color-stop( 0.5, #5777a2 ), color-stop( 0.5, #476999 ) ); }
+  #canvas .done-button {
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#7b9eea), to(#2463de), color-stop( 0.5, #376fe0 ), color-stop( 0.5, #2260dd ) ); }
+  #canvas .plain-button {
     font-size: 24px;
     padding: 0 12px;
-    font-weight: bold; }
+    font-weight: bold;
+    margin: 7px; }
   #canvas .back-button {
+    height: 32px;
+    line-height: 30px;
+    font-size: 14px;
+    margin: 5px;
     -webkit-border-image: url(../images/back-button-bg.png) 0 7 0 14 stretch stretch;
     border-width: 0 7px 0 14px; }
   #canvas .disclosure {

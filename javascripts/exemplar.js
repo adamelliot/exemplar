@@ -128,13 +128,17 @@ var Exemplar = function() {
     builder = builder || {};
 
     // Ensure the appropriate sections exists
-    config.toggles  = config.toggles  || {};
-    config.labels   = config.labels   || {};
-    config.configs  = config.configs  || {};
+    config.toggles    = config.toggles    || {};
+    config.labels     = config.labels     || {};
+    config.options    = config.options    || {};
+    config.configs    = config.configs    || {};
+    config.data       = config.data       || [];
     
-    builder.types   = builder.types   || {};
-    builder.toggles = builder.toggles || [];
-    builder.labels  = builder.labels  || [];
+    builder.types     = builder.types     || {};
+    builder.toggles   = builder.toggles   || [];
+    builder.labels    = builder.labels    || [];
+    builder.required  = builder.required  || {};
+    builder.options   = builder.options   || {};
 
     /**
      * R/O Access to the config block
@@ -189,7 +193,7 @@ var Exemplar = function() {
             }
           }
         }
-        
+
         var subview = subviews[name];
         if (subview) {
           if (subview.config.autoSize === true)
@@ -209,6 +213,14 @@ var Exemplar = function() {
       for (var i = 0; i < builder.labels.length; i++) {
         name = builder.labels[i];
         this.$.find("> ." + name).text(config.labels[name] || "");
+      }
+
+      var set;
+      // Set the option classes
+      for (var i in builder.options) {
+        set = builder.options[i];
+        for (var j = 0; j < set.length; j++) this.$.removeClass(set[j]);
+        this.$.addClass(config.options[i] || set[0] || "");
       }
     };
 
@@ -241,10 +253,10 @@ var Exemplar = function() {
     time = time[0] + ":" + time[1];
 
     this.$.append("<div class='network'>EXEMPLAR</div>");
-    this.$.append("<div class='battery'>77%</div>");
+    this.$.append("<div class='battery'>73%</div>");
     this.$.append("<div class='time'>" + time + "</div>");
   };
-  
+
   views.Keyboard = function() {
     this.__proto__ = new views.View('keyboard');
   };
@@ -271,6 +283,7 @@ var Exemplar = function() {
 
   views.TableViewSearch = function(config) {
     this.__proto__ = new views.View('table-view-search', config);
+    this.$.append("<input type='search' placeholder='Search' autosave='iphone' results='5' />");
   };
 
   views.TableView = function(config) {
@@ -299,7 +312,8 @@ var Exemplar = function() {
   views.ToolbarButton = function(config) {
     this.__proto__ = new views.View('toolbar-button', $.extend({
     }, config), {
-      labels: ['title']
+      labels: ['title'],
+      options: {style: ['plain-button', 'bordered-button', 'done-button', 'back-button']}
     });
 
     this.$.append("<div class='title'></div>");
@@ -311,7 +325,8 @@ var Exemplar = function() {
     this.__proto__ = new views.View('window', $.extend({
       toggles: {'status-bar': true, 'navigation-bar': true, 'content-view': true}
     }, config), {
-      toggles: ['status-bar', 'navigation-bar', 'content-view', 'toolbar', 'keyboard']
+      toggles:  ['status-bar', 'navigation-bar', 'content-view', 'toolbar', 'keyboard'],
+      required: {'content-view': true}
     });
   };
   
@@ -400,8 +415,10 @@ var Exemplar = function() {
       /**
        * Draw the toggle buttons
        */
-      var drawToggles = function(toggles) {
+      var drawToggles = function(toggles, required) {
         for (var i = 0; i < toggles.length; i++) {
+          if (required[toggles[i]]) continue;
+
           var id = "toggle_" + toggles[i].underscore();
           var html = $("<div></div>");
           var input = $("<input type='checkbox' id='" + id + "' />");
@@ -423,13 +440,40 @@ var Exemplar = function() {
           this.$.append(html);
         }
       };
+      
+      var drawOptions = function(options) {
+        for (var i in options) {
+          var id = "option_" + i.underscore();
+          var html = $("<div></div>");
+          var input = "<select id='" + id + "'>";
+
+          for (var j = 0; j < options[i].length; j++)
+            input += "<option value='" + options[i][j] + "'>" + options[i][j].humanize() + "</option>";
+          
+          input += "</select>";
+          input = $(input);
+
+          input.change((function() {
+            var name = i;
+            return function() {
+              view.config.options[name] = $(this).val();
+              view.update();
+            }; 
+          })());
+
+          html.append(input);
+
+          this.$.append(html);
+        }
+      };
 
       var populate = function() {
         if (!view || !view.builder) return;
         this.$.empty();
 
         drawLabels.call(this, view.builder.labels);
-        drawToggles.call(this, view.builder.toggles);
+        drawToggles.call(this, view.builder.toggles, view.builder.required);
+        drawOptions.call(this, view.builder.options);
       };
 
       this.__defineSetter__('view', function(val) {

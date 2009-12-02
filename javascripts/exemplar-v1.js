@@ -126,7 +126,7 @@ Exemplar.Screen = function(config) {
     var html = base.container;
 
     html.attr("class", "table-search");
-    html.html("<input type='search' placeholder='Search' autosave='iphone' results='5' />");
+    html.html("<input type='text' placeholder='Search' autosave='iphone' results='5' disabled='true' />");
 
     return base;
   };
