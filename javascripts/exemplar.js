@@ -123,6 +123,7 @@ var Exemplar = function() {
     this.__proto__ = new Element(null, className);
     var self = this;
     var subviews = {};
+    var dataViews = [];
 
     config  = config  || {};
     builder = builder || {};
@@ -139,6 +140,9 @@ var Exemplar = function() {
     builder.labels    = builder.labels    || [];
     builder.required  = builder.required  || {};
     builder.options   = builder.options   || {};
+    
+    // The data-views is always required
+    builder.required["data-views"] = true;
 
     /**
      * R/O Access to the config block
@@ -152,16 +156,49 @@ var Exemplar = function() {
     this.__defineGetter__("builder", function() { return builder; });
 
     /**
-     * Return a list of the attached subviews
+     * Return a list of the attached subviews.
      */
     this.__defineGetter__("subviews", function() { return subviews; });
+
+    /**
+     * Adds data of builder.dataType with the specified config, or just
+     * default.
+     */
+    this.addData = function(config) {
+      var type = views[(builder.dataType || "").camelize()];
+      if (!type) return;
+
+      var insert = this.$.prepend, target = this.$;
+
+      if (dataViews.length > 0) {
+        target = dataViews[dataViews.length - 1].$;
+        insert = target.after;
+      } else {
+        for (var i = 0; i < builder.toggles.length; i++) {
+          if (subviews[builder.toggles[i]]) {
+            target = subviews[builder.toggles[i]].$;
+            insert = target.after;
+          }
+
+          if (builder.toggles[i + 1] == 'data-views') break;
+        }
+      }
+      
+      var view = new type(config);
+      dataViews.push(view);
+
+      insert.call(target, view.$);
+    };
 
     /**
      * Generally called from the inspector to set new config vars.
      */
     this.update = function() {
       var insert = this.$.prepend, target = this.$, name;
-      
+      if (views[(builder.dataType || "").camelize()] &&
+        builder.toggles.indexOf('data-views') == -1)
+        builder.toggles.push('data-views')
+
       var autoSizeList = [];
       var size = this.$.height();
 
@@ -177,6 +214,11 @@ var Exemplar = function() {
           else {
             target = subviews[name].$;
             insert = subviews[name].$.after;
+          }
+        } else if (name == 'data-views') {
+          if (dataViews.length > 0) {
+            target = dataViews[dataViews.length - 1].$;
+            insert = target.after;
           }
         } else {
           if (config.toggles[name] === true) {
@@ -235,7 +277,8 @@ var Exemplar = function() {
      * Used to populate the inspector
      */
     this.$.click(function(event) {
-      if (self.builder.toggles.length <= 0 && self.builder.labels.length <= 0)
+      if (self.builder.toggles.length <= 0 && self.builder.labels.length <= 0 &&
+        self.builder.dataType === undefined)
         return;
 
       interface.inspectView(self);
@@ -249,12 +292,19 @@ var Exemplar = function() {
   views.StatusBar = function() {
     this.__proto__ = new views.View('status-bar');
     
-    var time = (new Date).toTimeString().split(":");
-    time = time[0] + ":" + time[1];
+    var time = $("<div class='time'></div>");
+
+    var updateTime = function() {
+      var t = (new Date).toTimeString().split(":");
+      t = t[0] + ":" + t[1];
+      time.text(t);
+    };
+    updateTime();
+    setInterval(updateTime, 500);
 
     this.$.append("<div class='network'>EXEMPLAR</div>");
     this.$.append("<div class='battery'>73%</div>");
-    this.$.append("<div class='time'>" + time + "</div>");
+    this.$.append(time);
   };
 
   views.Keyboard = function() {
@@ -263,7 +313,16 @@ var Exemplar = function() {
   
   views.NavigationBar = function(config) {
     this.__proto__ = new views.View('navigation-bar', $.extend({
-      configs: {back: {labels: {title: 'Back'}}, edit: {labels: {title: 'Edit'}}},
+      configs: {
+        back: {
+          options: {style: 'back-button'},
+          labels: {title: 'Back'}
+        }, 
+        edit: {
+          options: {style: 'done-button'},
+          labels: {title: 'Edit'}
+        }
+      },
       toggles: {back: true},
       labels:  {title: 'New Screen'}
     }, config), {
@@ -306,11 +365,14 @@ var Exemplar = function() {
   };
 
   views.Toolbar = function(config) {
-    this.__proto__ = new views.View('toolbar', config);
+    this.__proto__ = new views.View('toolbar', config, {
+      dataType: 'toolbar-button'
+    });
   };
   
   views.ToolbarButton = function(config) {
     this.__proto__ = new views.View('toolbar-button', $.extend({
+      labels: {title: "?"}
     }, config), {
       labels: ['title'],
       options: {style: ['plain-button', 'bordered-button', 'done-button', 'back-button']}
@@ -449,7 +511,7 @@ var Exemplar = function() {
 
           for (var j = 0; j < options[i].length; j++)
             input += "<option value='" + options[i][j] + "'>" + options[i][j].humanize() + "</option>";
-          
+
           input += "</select>";
           input = $(input);
 
@@ -461,6 +523,8 @@ var Exemplar = function() {
             }; 
           })());
 
+          input.val(view.config.options[i]);
+          
           html.append(input);
 
           this.$.append(html);
@@ -474,6 +538,14 @@ var Exemplar = function() {
         drawLabels.call(this, view.builder.labels);
         drawToggles.call(this, view.builder.toggles, view.builder.required);
         drawOptions.call(this, view.builder.options);
+        
+        if (views[(view.builder.dataType || "").camelize()]) {
+          var input = $("<button>Add " + view.builder.dataType.humanize() + "</button>");
+          input.click(function() {
+            view.addData();
+          });
+          this.$.append(input);
+        }
       };
 
       this.__defineSetter__('view', function(val) {
@@ -516,11 +588,6 @@ var Exemplar = function() {
      */
     var Canvas = function() {
       this.__proto__ = new Element('canvas', null, root);
-      
-      var screens = $("<div></div>");
-      screens.attr("id", "screens");
-
-      this.$.append(screens);
     };
 
     this.inspectView = function(view) {

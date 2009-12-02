@@ -22,7 +22,7 @@ h1 {
   min-height: 20px;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 100;
-  padding: 10px 12px 16px 12px; }
+  padding: 10px 12px 14px 12px; }
   #inspector label {
     text-shadow: 0px -1px 2px rgba(0, 0, 0, 1.0);
     color: #fff;
@@ -71,7 +71,8 @@ h1 {
   height: 100px;
   border: 4px solid #f80;
   margin: -4px;
-  z-index: 99; }
+  z-index: 99;
+  background: rgba(255, 255, 255, 0.2); }
 
 /* iPhone Elements */
 #canvas {
@@ -103,7 +104,7 @@ h1 {
     line-height: 42px;
     border-top: 1px solid #cdd5df; }
   #canvas .status-bar {
-    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#eff6f9), to(#bdc5c9) );
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#f2f8fa), to(#c9d0d3) );
     text-shadow: 0px 1px 0px #fff;
     color: #333;
     text-align: center;
@@ -157,9 +158,10 @@ h1 {
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#7b9eea), to(#2463de), color-stop( 0.5, #376fe0 ), color-stop( 0.5, #2260dd ) ); }
   #canvas .plain-button {
     font-size: 24px;
-    padding: 0 12px;
+    padding: 0 10px;
     font-weight: bold;
-    margin: 7px; }
+    margin: 7px;
+    min-width: 12px; }
   #canvas .back-button {
     height: 32px;
     line-height: 30px;
