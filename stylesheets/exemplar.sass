@@ -2,14 +2,6 @@
   :-webkit-border-radius = !radius
   :-moz-border-radius = !radius
 
-=rounded-top(!radius = 6px)
-  :-webkit-border-top-left-radius = !radius
-  :-webkit-border-top-right-radius = !radius
-
-=rounded-bottom(!radius = 6px)
-  :-webkit-border-bottom-left-radius = !radius
-  :-webkit-border-bottom-right-radius = !radius
-
 =box-shadow(!distance = 1px, !radius = 5px, !color = 32, !alpha = 0.6)
   :-webkit-box-shadow = 0px !distance !radius rgba(!color, !color, !color, !alpha)
 
@@ -21,7 +13,7 @@
   :background = "-webkit-gradient(""linear", 0% 0%, 0% 100%, from(!from), to(!to)")"
 
 =shiney-background-gradient(!from = #8ea4c1, !shine = #5777a2, !base = #476999, !to = #4a6c9b)
-  :background = "-webkit-gradient(""linear", 0% 0%, 0% 100%, from(!from), to(!to), color-stop(0.5, !shine), color-stop(0.5, !base)")"
+  :background = "-webkit-gradient(""linear", 0% 0%, 0% 100%, from(!from), to(!to), "color-stop("0.5, !shine")", "color-stop("0.5, !base")"")"
 
 =light-shadowed-text
   :text-shadow 0px -1px 2px rgba(0, 0, 0, 1.0)
@@ -88,15 +80,15 @@ h1
     :outline none
   
   input[type=checkbox]
-    :height 13px
-    :padding-right 3px
+    :height 14px
+    :margin-right 6px
 
   input[type=text]
     :border 1px solid #999
     :color #fff
     :background rgba(0, 0, 0, 0.6)
     :padding 4px 3px
-    :font-size 10pt
+    :font-size 12px
 
 #canvas
   +frame
@@ -119,7 +111,7 @@ h1
     :float right
 
 #selector
-  +rounded(10px)
+  +rounded(8px)
   :position fixed
   :width 100px
   :height 100px
@@ -135,24 +127,18 @@ h1
     :left 200px
     :top 30px
     :border 1px dashed #888
+  
+  .window-set
+    h1
+      :font-size 150%
 
   .window
-    +rounded(6px)
-    +box-shadow
+    +box-shadow(3px, 20px, 0, 0.5)
     +rect
     :overflow none
     :background #eee
     :float left
-    :margin 15px
-
-  .rounded-top
-    +rounded-top
-    
-  .rouned-bottom
-    +rounded-bottom
-
-  .element-spacer
-    
+    :margin 20px
 
   .navigation-bar, .content
     :border-bottom 1px solid #2d3642
@@ -165,7 +151,6 @@ h1
     border-top: 1px solid #cdd5df
 
   .status-bar
-    +rounded-top
     +background-gradient(#eff6f9, #bdc5c9)
     +dark-bezeled-text
     :border-bottom 1px solid #2d3642
@@ -195,8 +180,6 @@ h1
     height: 42px
     bottom: 0
     padding: 0 8px
-    -webkit-border-bottom-left-radius: 6px
-    -webkit-border-bottom-right-radius: 6px
 
   .keyboard
     background: url(../images/keyboard.png)

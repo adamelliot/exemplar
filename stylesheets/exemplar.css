@@ -30,14 +30,14 @@ h1 {
   #inspector input {
     outline: none; }
   #inspector input[type=checkbox] {
-    height: 13px;
-    padding-right: 3px; }
+    height: 14px;
+    margin-right: 6px; }
   #inspector input[type=text] {
     border: 1px solid #999;
     color: #fff;
     background: rgba(0, 0, 0, 0.6);
     padding: 4px 3px;
-    font-size: 10pt; }
+    font-size: 12px; }
 
 #canvas {
   top: 0;
@@ -64,8 +64,8 @@ h1 {
     float: right; }
 
 #selector {
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
   position: fixed;
   width: 100px;
   height: 100px;
@@ -82,16 +82,16 @@ h1 {
     left: 200px;
     top: 30px;
     border: 1px dashed #888; }
+  #canvas .window-set h1 {
+    font-size: 150%; }
   #canvas .window {
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    -webkit-box-shadow: 0px 1px 5px rgba(32, 32, 32, 0.6);
+    -webkit-box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5);
     width: 320px;
     height: 480px;
     overflow: none;
     background: #eee;
     float: left;
-    margin: 15px; }
+    margin: 20px; }
   #canvas .navigation-bar, #canvas .content {
     border-bottom: 1px solid #2d3642; }
   #canvas .navigation-bar, #canvas .toolbar {
@@ -103,8 +103,6 @@ h1 {
     line-height: 42px;
     border-top: 1px solid #cdd5df; }
   #canvas .status-bar {
-    -webkit-border-top-left-radius: 6px;
-    -webkit-border-top-right-radius: 6px;
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#eff6f9), to(#bdc5c9) );
     text-shadow: 0px 1px 0px #fff;
     color: #333;
@@ -130,15 +128,13 @@ h1 {
   #canvas .toolbar {
     height: 42px;
     bottom: 0;
-    padding: 0 8px;
-    -webkit-border-bottom-left-radius: 6px;
-    -webkit-border-bottom-right-radius: 6px; }
+    padding: 0 8px; }
   #canvas .keyboard {
     background: url(../images/keyboard.png);
     width: 320px;
     height: 215px; }
   #canvas .toolbar-button {
-    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8ea4c1), to(#4a6c9b), color-stop(0.5, #5777a2), color-stop(0.5, #476999) );
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8ea4c1), to(#4a6c9b), color-stop( 0.5, #5777a2 ), color-stop( 0.5, #476999 ) );
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.4);

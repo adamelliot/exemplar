@@ -148,10 +148,18 @@ var Exemplar = function() {
     this.__defineGetter__("builder", function() { return builder; });
 
     /**
+     * Return a list of the attached subviews
+     */
+    this.__defineGetter__("subviews", function() { return subviews; });
+
+    /**
      * Generally called from the inspector to set new config vars.
      */
     this.update = function() {
       var insert = this.$.prepend, target = this.$, name;
+      
+      var autoSizeList = [];
+      var size = this.$.height();
 
       // Create the internal views
       for (var i = 0; i < builder.toggles.length; i++) {
@@ -181,7 +189,19 @@ var Exemplar = function() {
             }
           }
         }
+        
+        var subview = subviews[name];
+        if (subview) {
+          if (subview.config.autoSize === true)
+            autoSizeList.push(subview);
+          else
+            size -= subview.$.outerHeight();
+        }
       }
+
+      size /= autoSizeList.length;
+      for (var i = 0; i < autoSizeList.length; i++)
+        autoSizeList[i].$.css({height: size});
 
       // Set the label values
       for (var i = 0; i < builder.labels.length; i++) {
@@ -243,12 +263,30 @@ var Exemplar = function() {
     this.update();
   };
 
+  views.CustomView = function(config) {
+    
+  };
+
+  views.TableView = function(config) {
+    
+  };
+
+  /**
+   * This is a special view who's vertical size is auto adjusted.
+   */
+  views.ContentView = function(config) {
+    this.__proto__ = new views.View('content-view', $.extend({
+      autoSize: true
+    }, config), {
+      
+    });
+  };
+
   views.Toolbar = function(config) {
     this.__proto__ = new views.View('toolbar', config);
   };
   
   views.ToolbarButton = function(config) {
-    console.log(config);
     this.__proto__ = new views.View('toolbar-button', $.extend({
     }, config), {
       labels: ['title']
@@ -261,9 +299,9 @@ var Exemplar = function() {
 
   views.Window = function(config) {
     this.__proto__ = new views.View('window', $.extend({
-      toggles: {'status-bar': true, 'navigation-bar': true}
+      toggles: {'status-bar': true, 'navigation-bar': true, 'content-view': true}
     }, config), {
-      toggles: ['status-bar', 'navigation-bar', 'toolbar', 'keyboard']
+      toggles: ['status-bar', 'navigation-bar', 'content-view', 'toolbar', 'keyboard']
     });
   };
   
@@ -319,6 +357,8 @@ var Exemplar = function() {
        * Draw the label text fields
        */
       var drawLabels = function(labels) {
+        var firstResponder;
+
         for (var i = 0; i < labels.length; i++) {
           var id = "label_" + labels[i].underscore();
           var html = $("<div></div>");
@@ -335,10 +375,16 @@ var Exemplar = function() {
           if (view.config.labels[labels[i]] !== undefined)
             input.val(view.config.labels[labels[i]]);
 
+          firstResponder = firstResponder || input;
+
           html.append(input);
 
           this.$.append(html);
         }
+        
+        if (firstResponder) 
+          if (firstResponder.val() == '') firstResponder.focus();
+          else firstResponder.select();
       };
 
       /**
