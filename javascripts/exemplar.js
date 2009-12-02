@@ -200,8 +200,10 @@ var Exemplar = function() {
       }
 
       size /= autoSizeList.length;
-      for (var i = 0; i < autoSizeList.length; i++)
+      for (var i = 0; i < autoSizeList.length; i++) {
         autoSizeList[i].$.css({height: size});
+        autoSizeList[i].update();
+      }
 
       // Set the label values
       for (var i = 0; i < builder.labels.length; i++) {
@@ -263,12 +265,20 @@ var Exemplar = function() {
     this.update();
   };
 
-  views.CustomView = function(config) {
-    
+  views.TextView = function(config) {
+    this.__proto__ = new views.View('text-view', config);
+  };
+
+  views.TableViewSearch = function(config) {
+    this.__proto__ = new views.View('table-view-search', config);
   };
 
   views.TableView = function(config) {
-    
+    this.__proto__ = new views.View('table-view', $.extend({
+      autoSize: true
+    }, config), {
+      toggles: ['table-view-search']
+    });
   };
 
   /**
@@ -278,7 +288,7 @@ var Exemplar = function() {
     this.__proto__ = new views.View('content-view', $.extend({
       autoSize: true
     }, config), {
-      
+      toggles: ['content-view', 'table-view']
     });
   };
 

@@ -125,6 +125,8 @@ h1 {
     float: right; }
   #canvas .navigation-bar > .back {
     float: left; }
+  #canvas .content-view {
+    border-bottom: 1px solid #2d3642; }
   #canvas .toolbar {
     height: 42px;
     bottom: 0;
@@ -162,15 +164,15 @@ h1 {
     margin: 13px 0px 10px 6px;
     float: right;
     background: url(../images/disclosure.png); }
-  #canvas .table-search {
+  #canvas .table-view-search {
     height: 42px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e0e4e7), to(#b4bec6));
     border-top: 1px solid #f1f3f4;
     border-bottom: 1px solid #717d85; }
-  #canvas .table-search input {
-    margin: 9px;
-    font-size: 18px;
-    width: 300px; }
+    #canvas .table-view-search input {
+      margin: 9px;
+      font-size: 18px;
+      width: 300px; }
   #canvas .grouped-table-cell, #canvas .table-cell {
     height: 43px;
     background: #fff;
