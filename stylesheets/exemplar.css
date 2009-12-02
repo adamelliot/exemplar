@@ -198,8 +198,7 @@ h1 {
     line-height: 20px;
     font-weight: normal;
     height: 20px;
-    font-size: 17px;
-    margin-bottom: 4px; }
+    font-size: 17px; }
   #canvas .table-view-cell {
     border-bottom: 1px solid #ddd;
     min-height: 43px;

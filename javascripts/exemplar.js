@@ -210,6 +210,7 @@ var Exemplar = function() {
 
       var autoSizeList = [];
       var size = this.$.height();
+      var changedViews = false;
 
       // Create the internal views
       for (var i = 0; i < builder.toggles.length; i++) {
@@ -218,6 +219,7 @@ var Exemplar = function() {
         if (subviews[name]) {
           if (config.toggles[name] !== true) {
             subviews[name].destroy();
+            changedViews = true;
             subviews[name] = undefined;
           }
           else {
@@ -235,6 +237,7 @@ var Exemplar = function() {
             var type = views[className.camelize()];
             
             if (type) {
+              changedViews = true;
               var view = subviews[name] = new type(config.configs[name]);
               view.parent = self;
               if (className != name) view.$.addClass(name);
@@ -274,6 +277,9 @@ var Exemplar = function() {
         for (var j = 0; j < set.length; j++) this.$.removeClass(set[j]);
         this.$.addClass(config.options[i] || set[0] || "");
       }
+
+      if (interface && changedViews)
+        interface.updateInspector();
     };
 
     /**
@@ -583,7 +589,7 @@ var Exemplar = function() {
         }
       };
 
-      var populate = function() {
+      this.update = function() {
         if (!view || !view.builder) return;
         this.$.empty();
         
@@ -625,7 +631,7 @@ var Exemplar = function() {
         // FIXME: Without the fade out nested elements become untouchable
         selector.fadeOut("fast");
         
-        populate.call(this);
+        this.update();
       });
     };
 
@@ -656,6 +662,10 @@ var Exemplar = function() {
 
     this.inspectView = function(view) {
       inspector.view = view;
+    };
+    
+    this.updateInspector = function() {
+      inspector.update();
     };
 
     canvas = new Canvas();
