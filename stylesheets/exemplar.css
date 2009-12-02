@@ -22,15 +22,22 @@ h1 {
   min-height: 20px;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 100;
-  padding: 8px 12px 16px 12px; }
+  padding: 10px 12px 16px 12px; }
   #inspector label {
     text-shadow: 0px -1px 2px rgba(0, 0, 0, 1.0);
     color: #fff;
-    font-size: 10pt; }
+    font-size: 11pt; }
   #inspector input {
-    font: -webkit-mini-control;
-    margin: 3px 3px 3px 1px;
-    height: 11px; }
+    outline: none; }
+  #inspector input[type=checkbox] {
+    height: 13px;
+    padding-right: 3px; }
+  #inspector input[type=text] {
+    border: 1px solid #999;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4px 3px;
+    font-size: 10pt; }
 
 #canvas {
   top: 0;
@@ -56,21 +63,25 @@ h1 {
   #toolbar button.add-screen {
     float: right; }
 
+#selector {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  border: 4px solid #f80;
+  margin: -4px;
+  z-index: 99; }
+
 /* iPhone Elements */
 #canvas {
-  /* Buttons */ }
+  /* Buttons */
+  /* Table stuff */ }
   #canvas #application {
     position: fixed;
-    left: 0;
-    top: 0;
-    border: 1px dashed #888;
-    padding: 15px; }
-  #canvas .selected {
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border: 4px solid #f80 !important;
-    margin: -4px !important;
-    z-index: 99; }
+    left: 200px;
+    top: 30px;
+    border: 1px dashed #888; }
   #canvas .window {
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -79,32 +90,43 @@ h1 {
     height: 480px;
     overflow: none;
     background: #eee;
-    float: left; }
-  #canvas .status-bar, #canvas .toolbar, #canvas .navigation-bar, #canvas .content {
-    border: none; }
+    float: left;
+    margin: 15px; }
   #canvas .navigation-bar, #canvas .content {
     border-bottom: 1px solid #2d3642; }
   #canvas .navigation-bar, #canvas .toolbar {
-    height: 42px;
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#b0bccd), to(#6d84a2) );
-    border-top: 1px solid #cdd5df;
-    color: #fff;
     text-shadow: 0px -1px 0px #555;
+    color: #fff;
     text-align: center;
-    line-height: 42px; }
+    height: 42px;
+    line-height: 42px;
+    border-top: 1px solid #cdd5df; }
   #canvas .status-bar {
     -webkit-border-top-left-radius: 6px;
     -webkit-border-top-right-radius: 6px;
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#eff6f9), to(#bdc5c9) );
-    color: #111;
+    text-shadow: 0px 1px 0px #fff;
+    color: #333;
+    text-align: center;
     border-bottom: 1px solid #2d3642;
     height: 19px;
-    line-height: 19px;
-    text-align: center;
+    line-height: 21px;
     font-weight: bold;
-    font-size: 10pt; }
+    font-size: 12px;
+    padding: 0 6px; }
+    #canvas .status-bar .network {
+      float: left; }
+    #canvas .status-bar .time {
+      margin: 0 60px; }
+    #canvas .status-bar .battery {
+      float: right; }
   #canvas .navigation-bar > .title {
     margin: 0 90px; }
+  #canvas .navigation-bar > .edit {
+    float: right; }
+  #canvas .navigation-bar > .back {
+    float: left; }
   #canvas .toolbar {
     height: 42px;
     bottom: 0;
@@ -114,19 +136,23 @@ h1 {
   #canvas .keyboard {
     background: url(../images/keyboard.png);
     width: 320px;
-    height: 215px;
-    bottom: 0; }
-  #canvas .button, #canvas .back-button {
-    color: #fff;
-    font-size: 14px;
+    height: 215px; }
+  #canvas .toolbar-button {
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8ea4c1), to(#4a6c9b), color-stop(0.5, #5777a2), color-stop(0.5, #476999) );
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
     text-shadow: 0px -1px 0px #555;
-    height: 31px;
-    line-height: 31px;
+    color: #fff;
+    text-align: center;
+    min-width: 30px;
+    font-size: 14px;
+    height: 27px;
+    line-height: 27px;
     margin: 6px;
-    padding: 0 2px; }
-  #canvas .button {
-    -webkit-border-image: url(../images/button-bg.png) 0 9 0 10 stretch stretch;
-    border-width: 0 9px 0 10px; }
+    padding: 0 6px;
+    float: left; }
   #canvas .borderless-button {
     font-size: 24px;
     padding: 0 12px;

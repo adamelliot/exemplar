@@ -153,6 +153,7 @@ var Exemplar = function() {
     this.update = function() {
       var insert = this.$.prepend, target = this.$, name;
 
+      // Create the internal views
       for (var i = 0; i < builder.toggles.length; i++) {
         name = builder.toggles[i];
 
@@ -171,13 +172,21 @@ var Exemplar = function() {
             var type = views[className.camelize()];
             
             if (type) {
-              var view = subviews[name] = new type(config.configs[className])
+              var view = subviews[name] = new type(config.configs[name]);
+              if (className != name) view.$.addClass(name);
+
               insert.call(target, view.$);
               target = view.$;
               insert = view.$.after;
             }
           }
         }
+      }
+
+      // Set the label values
+      for (var i = 0; i < builder.labels.length; i++) {
+        name = builder.labels[i];
+        this.$.find("> ." + name).text(config.labels[name] || "");
       }
     };
 
@@ -192,11 +201,9 @@ var Exemplar = function() {
      * Used to populate the inspector
      */
     this.$.click(function(event) {
-      if (self.builder === undefined) return;
+      if (self.builder.toggles.length <= 0 && self.builder.labels.length <= 0)
+        return;
 
-      $(".selected").removeClass("selected");
-      $(this).addClass("selected");
-      
       interface.inspectView(self);
       
       event.stopPropagation();
@@ -207,6 +214,13 @@ var Exemplar = function() {
 
   views.StatusBar = function() {
     this.__proto__ = new views.View('status-bar');
+    
+    var time = (new Date).toTimeString().split(":");
+    time = time[0] + ":" + time[1];
+
+    this.$.append("<div class='network'>EXEMPLAR</div>");
+    this.$.append("<div class='battery'>77%</div>");
+    this.$.append("<div class='time'>" + time + "</div>");
   };
   
   views.Keyboard = function() {
@@ -214,27 +228,41 @@ var Exemplar = function() {
   };
   
   views.NavigationBar = function(config) {
-    this.__proto__ = new views.View('navigation-bar', {
+    this.__proto__ = new views.View('navigation-bar', $.extend({
+      configs: {back: {labels: {title: 'Back'}}, edit: {labels: {title: 'Edit'}}},
       toggles: {back: true},
-      labels:  {title: '[Rock Bottom]'}
-    }, {
+      labels:  {title: 'New Screen'}
+    }, config), {
       types:   {back: 'toolbar-button', edit: 'toolbar-button'},
       toggles: ['back', 'edit'],
       labels:  ['title']
     });
 
-    var title = $("<div class='title'>?</div>");
-    this.$.append(title);
+    this.$.append("<div class='title'>?</div>");
+
+    this.update();
+  };
+
+  views.Toolbar = function(config) {
+    this.__proto__ = new views.View('toolbar', config);
   };
   
-  views.Toolbar = function(config) {
-    this.__proto__ = new views.View('toolbar');
+  views.ToolbarButton = function(config) {
+    console.log(config);
+    this.__proto__ = new views.View('toolbar-button', $.extend({
+    }, config), {
+      labels: ['title']
+    });
+
+    this.$.append("<div class='title'></div>");
+
+    this.update();
   };
 
   views.Window = function(config) {
-    this.__proto__ = new views.View('window', {
+    this.__proto__ = new views.View('window', $.extend({
       toggles: {'status-bar': true, 'navigation-bar': true}
-    }, {
+    }, config), {
       toggles: ['status-bar', 'navigation-bar', 'toolbar', 'keyboard']
     });
   };
@@ -283,8 +311,36 @@ var Exemplar = function() {
       this.__proto__ = new Element('inspector', null, root);
       this.$.draggable({containment: '#canvas'});
 
-      var view;
-      
+      var selector = $("<div id='selector'></div>"), view;
+      $(root).append(selector);
+      selector.hide();
+
+      /**
+       * Draw the label text fields
+       */
+      var drawLabels = function(labels) {
+        for (var i = 0; i < labels.length; i++) {
+          var id = "label_" + labels[i].underscore();
+          var html = $("<div></div>");
+          var input = $("<input type='text' placeholder='" + labels[i].humanize() + "' id='" + id + "' />");
+
+          input.keyup((function() {
+            var name = labels[i];
+            return function() {
+              view.config.labels[name] = $("#label_" + name.underscore()).val();
+              view.update();
+            }; 
+          })());
+
+          if (view.config.labels[labels[i]] !== undefined)
+            input.val(view.config.labels[labels[i]]);
+
+          html.append(input);
+
+          this.$.append(html);
+        }
+      };
+
       /**
        * Draw the toggle buttons
        */
@@ -294,7 +350,7 @@ var Exemplar = function() {
           var html = $("<div></div>");
           var input = $("<input type='checkbox' id='" + id + "' />");
           var label = $("<label for='" + id + "'>" + toggles[i].humanize() + "</label>");
-          
+
           input.click((function() {
             var name = toggles[i];
             return function() {
@@ -316,11 +372,23 @@ var Exemplar = function() {
         if (!view || !view.builder) return;
         this.$.empty();
 
+        drawLabels.call(this, view.builder.labels);
         drawToggles.call(this, view.builder.toggles);
       };
 
       this.__defineSetter__('view', function(val) {
         view = val;
+        
+        selector.css({
+          left:   view.$.offset().left,
+          top:    view.$.offset().top,
+          width:  view.$.outerWidth(),
+          height: view.$.outerHeight(),
+        });
+        selector.show();
+        // FIXME: Without the fade out nested elements become untouchable
+        selector.fadeOut("fast");
+        
         populate.call(this);
       });
     };
