@@ -174,7 +174,6 @@ h1
     :font-size 12px
     :padding 0px 6px
 
-
     .network
       :float left
       :padding 2px 0 0 0
@@ -247,10 +246,6 @@ h1
 
   /* Table Stuff */
 
-  .table-view
-    background: url(../images/table-bg.png)
-    overflow: hidden
-
   .table-view-search
     height: 42px
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e0e4e7), to(#b4bec6))
@@ -261,30 +256,6 @@ h1
       font-size: 18px
       width: 300px
 
-  .table-view-group
-    +box-shadow(2px, 3px, 32, 0.4)
-
-  .table-view-header, .table-view-footer
-    color: #fff
-    padding-left: 20px
-    text-shadow: 0px 1px 0px #555
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8))
-    border-top: 1px solid #a5b1ba
-    border-bottom: 1px solid #989ea4
-    line-height: 20px
-    font-weight: normal
-    height: 20px
-    font-size: 17px
-
-  .table-view-cell
-    border-bottom: 1px solid #ddd
-    min-height: 43px
-    background: #fff
-    font-weight: bold
-    line-height: 43px
-    padding: 0 18px
-    font-size: 18px
-    
   .disclosure
     width: 13px
     height: 19px
@@ -292,44 +263,67 @@ h1
     float: right
     background: url(../images/disclosure.png)
 
+  .table-view
+    overflow: hidden
+    
+    .table-view-cell
+      :font-size 18px
+      :min-height 43px
+      :background #fff
+      :font-weight bold
+      :line-height 43px
+      :padding 0 18px
 
-  /* Old Table stuff */
+  /* Plain Table */
 
-  //.grouped-table-cell, .table-cell
+  .table-view.plain-table
+    background: url(../images/table-bg.png)
 
+    .table-view-group
+      +box-shadow(2px, 3px, 32, 0.4)
 
-  .grouped-table-view
+    .table-view-header, .table-view-footer
+      color: #fff
+      padding-left: 20px
+      text-shadow: 0px 1px 0px #555
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8))
+      border-top: 1px solid #a5b1ba
+      border-bottom: 1px solid #989ea4
+      line-height: 20px
+      font-weight: normal
+      height: 20px
+      font-size: 17px
+
+    .table-view-cell
+      border-bottom: 1px solid #ddd
+
+  /* Grouped Table */
+
+  .table-view.grouped-table
     background: url(../images/grouped-table-bg.png)
-    padding-top: 1px
 
+    .table-view-header, .table-view-footer
+      margin-top: 7px
+      color: #4c566c
+      padding-left: 20px
+      text-shadow: 0px 1px 0px #eee
+      line-height: 25px
+      font-weight: normal
+      height: 25px
+      font-size: 18px
 
-  .grouped-table-header
-    margin-top: 7px
-    color: #4c566c
-    padding-left: 20px
-    text-shadow: 0px 1px 0px #eee
-    line-height: 25px
-    font-weight: normal
-    height: 25px
-    font-size: 18px
+    .table-view-group .table-view-cell:nth-child(2)
+      +rounded-top
+      :margin-top 7px
+      :border-top 1px solid #aaa
 
+    .table-view-group .table-view-cell:nth-last-child(2)
+      +rounded-bottom
+      :margin-bottom 7px
 
-  .first-grouped-table-cell
-    margin-top: 7px
-    -webkit-border-top-left-radius: 14px
-    -webkit-border-top-right-radius: 14px
-    border-top: 1px solid #aaa
-
-
-  .last-grouped-table-cell
-    margin-bottom: 14px
-    -webkit-border-bottom-left-radius: 14px
-    -webkit-border-bottom-right-radius: 14px
-
-
-  .grouped-table-cell
-    margin-left: 10px
-    margin-right: 10px
-    border-bottom: 1px solid #aaa
-    border-left: 1px solid #aaa
-    border-right: 1px solid #aaa
+    .table-view-cell
+      margin-left: 10px
+      margin-right: 10px
+      border-bottom: 1px solid #aaa
+      border-left: 1px solid #aaa
+      border-right: 1px solid #aaa

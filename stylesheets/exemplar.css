@@ -81,7 +81,8 @@ h1 {
 #canvas {
   /* Toolbar Button */
   /* Table Stuff */
-  /* Old Table stuff */ }
+  /* Plain Table */
+  /* Grouped Table */ }
   #canvas #application {
     position: fixed;
     white-space: nowrap;
@@ -177,9 +178,6 @@ h1 {
     margin: 5px;
     -webkit-border-image: url(../images/back-button-bg.png) 0 7 0 14 stretch stretch;
     border-width: 0 7px 0 14px; }
-  #canvas .table-view {
-    background: url(../images/table-bg.png);
-    overflow: hidden; }
   #canvas .table-view-search {
     height: 42px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e0e4e7), to(#b4bec6));
@@ -189,57 +187,61 @@ h1 {
       margin: 9px;
       font-size: 18px;
       width: 300px; }
-  #canvas .table-view-group {
-    -webkit-box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.4); }
-  #canvas .table-view-header, #canvas .table-view-footer {
-    color: #fff;
-    padding-left: 20px;
-    text-shadow: 0px 1px 0px #555;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8));
-    border-top: 1px solid #a5b1ba;
-    border-bottom: 1px solid #989ea4;
-    line-height: 20px;
-    font-weight: normal;
-    height: 20px;
-    font-size: 17px; }
-  #canvas .table-view-cell {
-    border-bottom: 1px solid #ddd;
-    min-height: 43px;
-    background: #fff;
-    font-weight: bold;
-    line-height: 43px;
-    padding: 0 18px;
-    font-size: 18px; }
   #canvas .disclosure {
     width: 13px;
     height: 19px;
     margin: 13px 0px 10px 6px;
     float: right;
     background: url(../images/disclosure.png); }
-  #canvas .grouped-table-view {
-    background: url(../images/grouped-table-bg.png);
-    padding-top: 1px; }
-  #canvas .grouped-table-header {
-    margin-top: 7px;
-    color: #4c566c;
-    padding-left: 20px;
-    text-shadow: 0px 1px 0px #eee;
-    line-height: 25px;
-    font-weight: normal;
-    height: 25px;
-    font-size: 18px; }
-  #canvas .first-grouped-table-cell {
-    margin-top: 7px;
-    -webkit-border-top-left-radius: 14px;
-    -webkit-border-top-right-radius: 14px;
-    border-top: 1px solid #aaa; }
-  #canvas .last-grouped-table-cell {
-    margin-bottom: 14px;
-    -webkit-border-bottom-left-radius: 14px;
-    -webkit-border-bottom-right-radius: 14px; }
-  #canvas .grouped-table-cell {
-    margin-left: 10px;
-    margin-right: 10px;
-    border-bottom: 1px solid #aaa;
-    border-left: 1px solid #aaa;
-    border-right: 1px solid #aaa; }
+  #canvas .table-view {
+    overflow: hidden; }
+    #canvas .table-view .table-view-cell {
+      font-size: 18px;
+      min-height: 43px;
+      background: #fff;
+      font-weight: bold;
+      line-height: 43px;
+      padding: 0 18px; }
+  #canvas .table-view.plain-table {
+    background: url(../images/table-bg.png); }
+    #canvas .table-view.plain-table .table-view-group {
+      -webkit-box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.4); }
+    #canvas .table-view.plain-table .table-view-header, #canvas .table-view.plain-table .table-view-footer {
+      color: #fff;
+      padding-left: 20px;
+      text-shadow: 0px 1px 0px #555;
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8));
+      border-top: 1px solid #a5b1ba;
+      border-bottom: 1px solid #989ea4;
+      line-height: 20px;
+      font-weight: normal;
+      height: 20px;
+      font-size: 17px; }
+    #canvas .table-view.plain-table .table-view-cell {
+      border-bottom: 1px solid #ddd; }
+  #canvas .table-view.grouped-table {
+    background: url(../images/grouped-table-bg.png); }
+    #canvas .table-view.grouped-table .table-view-header, #canvas .table-view.grouped-table .table-view-footer {
+      margin-top: 7px;
+      color: #4c566c;
+      padding-left: 20px;
+      text-shadow: 0px 1px 0px #eee;
+      line-height: 25px;
+      font-weight: normal;
+      height: 25px;
+      font-size: 18px; }
+    #canvas .table-view.grouped-table .table-view-group .table-view-cell:nth-child(2) {
+      -webkit-border-top-left-radius: 14px;
+      -webkit-border-top-right-radius: 14px;
+      margin-top: 7px;
+      border-top: 1px solid #aaa; }
+    #canvas .table-view.grouped-table .table-view-group .table-view-cell:nth-last-child(2) {
+      -webkit-border-bottom-left-radius: 14px;
+      -webkit-border-bottom-right-radius: 14px;
+      margin-bottom: 7px; }
+    #canvas .table-view.grouped-table .table-view-cell {
+      margin-left: 10px;
+      margin-right: 10px;
+      border-bottom: 1px solid #aaa;
+      border-left: 1px solid #aaa;
+      border-right: 1px solid #aaa; }

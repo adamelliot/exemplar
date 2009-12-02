@@ -293,10 +293,6 @@ var Exemplar = function() {
      * Used to populate the inspector
      */
     this.$.click(function(event) {
-//      if (self.builder.toggles.length <= 0 && self.builder.labels.length <= 0 &&
-//        self.builder.dataType === undefined)
-//        return;
-
       if (!self.parent || self.parent.builder.dataType == className) {
         interface.inspectView(self);
         event.stopPropagation();
