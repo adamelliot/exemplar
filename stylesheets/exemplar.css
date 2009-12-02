@@ -23,6 +23,9 @@ h1 {
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 100;
   padding: 10px 12px 14px 12px; }
+  #inspector hr {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.8); }
   #inspector label {
     text-shadow: 0px -1px 2px rgba(0, 0, 0, 1.0);
     color: #fff;
@@ -85,7 +88,7 @@ h1 {
     left: 200px;
     top: 30px;
     border: 1px dashed #888; }
-  #canvas .window-set h1 {
+  #canvas .window-set .title {
     font-size: 150%; }
   #canvas .window {
     -webkit-box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5);
@@ -173,7 +176,7 @@ h1 {
     border-width: 0 7px 0 14px; }
   #canvas .table-view {
     background: url(../images/table-bg.png);
-    overflow: none; }
+    overflow: hidden; }
   #canvas .table-view-search {
     height: 42px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e0e4e7), to(#b4bec6));
@@ -199,7 +202,7 @@ h1 {
     margin-bottom: 4px; }
   #canvas .table-view-cell {
     border-bottom: 1px solid #ddd;
-    height: 43px;
+    min-height: 43px;
     background: #fff;
     font-weight: bold;
     line-height: 43px;

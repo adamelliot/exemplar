@@ -80,6 +80,10 @@ h1
   
   :padding 10px 12px 14px 12px
   
+  hr
+    :border none
+    :border-bottom 1px solid rgba(0, 0, 0, 0.8)
+  
   label
     +light-shadowed-text
     :font-size 11pt
@@ -137,9 +141,9 @@ h1
     :left 200px
     :top 30px
     :border 1px dashed #888
-  
+
   .window-set
-    h1
+    .title
       :font-size 150%
 
   .window
@@ -241,7 +245,7 @@ h1
 
   .table-view
     background: url(../images/table-bg.png)
-    overflow: none
+    overflow: hidden
 
   .table-view-search
     height: 42px
@@ -271,22 +275,22 @@ h1
 
   .table-view-cell
     border-bottom: 1px solid #ddd
-    height: 43px
+    min-height: 43px
     background: #fff
     font-weight: bold
     line-height: 43px
     padding: 0 18px
     font-size: 18px
     
-
-  /* Old Table stuff */
-
   .disclosure
     width: 13px
     height: 19px
     margin: 13px 0px 10px 6px
     float: right
     background: url(../images/disclosure.png)
+
+
+  /* Old Table stuff */
 
   //.grouped-table-cell, .table-cell
 

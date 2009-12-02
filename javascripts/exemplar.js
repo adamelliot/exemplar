@@ -124,6 +124,7 @@ var Exemplar = function() {
     var self = this;
     var subviews = {};
     var dataViews = [];
+    var parent;
 
     config  = config  || {};
     builder = builder || {};
@@ -161,6 +162,13 @@ var Exemplar = function() {
     this.__defineGetter__("subviews", function() { return subviews; });
 
     /**
+     * Used for traversal of the the heirachy when saving / destroying
+     * and updating the inspector
+     */
+     this.__defineGetter__("parent", function() { return parent; });
+     this.__defineSetter__("parent", function(val) { parent = val; });
+
+    /**
      * Adds data of builder.dataType with the specified config, or just
      * default.
      */
@@ -185,6 +193,7 @@ var Exemplar = function() {
       }
       
       var view = new type(config);
+      view.parent = self;
       dataViews.push(view);
 
       insert.call(target, view.$);
@@ -227,6 +236,7 @@ var Exemplar = function() {
             
             if (type) {
               var view = subviews[name] = new type(config.configs[name]);
+              view.parent = self;
               if (className != name) view.$.addClass(name);
 
               insert.call(target, view.$);
@@ -254,7 +264,7 @@ var Exemplar = function() {
       // Set the label values
       for (var i = 0; i < builder.labels.length; i++) {
         name = builder.labels[i];
-        this.$.find("> ." + name).text(config.labels[name] || "");
+        this.$.find("> ." + name).html(config.labels[name] || "");
       }
 
       var set;
@@ -277,13 +287,14 @@ var Exemplar = function() {
      * Used to populate the inspector
      */
     this.$.click(function(event) {
-      if (self.builder.toggles.length <= 0 && self.builder.labels.length <= 0 &&
-        self.builder.dataType === undefined)
-        return;
+//      if (self.builder.toggles.length <= 0 && self.builder.labels.length <= 0 &&
+//        self.builder.dataType === undefined)
+//        return;
 
-      interface.inspectView(self);
-      
-      event.stopPropagation();
+      if (!self.parent || self.parent.builder.dataType == className) {
+        interface.inspectView(self);
+        event.stopPropagation();
+      }
     });
 
     this.update();
@@ -346,7 +357,7 @@ var Exemplar = function() {
   };
   
   views.TableViewGroup = function(config) {
-    this.__proto__ = new views.View('table-view', $.extend({
+    this.__proto__ = new views.View('table-view-group', $.extend({
       toggles: {'table-view-header': true, 'table-view-footer': true}
     }, config), {
       toggles: ['table-view-header', 'data-views', 'table-view-footer'],
@@ -372,6 +383,7 @@ var Exemplar = function() {
       labels: ['title']
     });
 
+    this.$.append("<div class='disclosure'></div>");
     this.$.append("<div class='title'></div>");
     this.update();
   };
@@ -482,22 +494,25 @@ var Exemplar = function() {
       var selector = $("<div id='selector'></div>"), view;
       $(root).append(selector);
       selector.hide();
+      
+      var baseNumber = 0;
+      var uniqueId = function() {
+        return ('input' + baseNumber++);
+      };
 
       /**
        * Draw the label text fields
        */
-      var drawLabels = function(labels) {
-        var firstResponder;
-
+      var drawLabels = function(view, labels) {
         for (var i = 0; i < labels.length; i++) {
-          var id = "label_" + labels[i].underscore();
+          var id = uniqueId();
           var html = $("<div></div>");
           var input = $("<input type='text' placeholder='" + labels[i].humanize() + "' id='" + id + "' />");
 
           input.keyup((function() {
             var name = labels[i];
             return function() {
-              view.config.labels[name] = $("#label_" + name.underscore()).val();
+              view.config.labels[name] = $(this).val();
               view.update();
             }; 
           })());
@@ -505,26 +520,20 @@ var Exemplar = function() {
           if (view.config.labels[labels[i]] !== undefined)
             input.val(view.config.labels[labels[i]]);
 
-          firstResponder = firstResponder || input;
-
           html.append(input);
 
           this.$.append(html);
         }
-        
-        if (firstResponder) 
-          if (firstResponder.val() == '') firstResponder.focus();
-          else firstResponder.select();
       };
 
       /**
        * Draw the toggle buttons
        */
-      var drawToggles = function(toggles, required) {
+      var drawToggles = function(view, toggles, required) {
         for (var i = 0; i < toggles.length; i++) {
           if (required[toggles[i]]) continue;
 
-          var id = "toggle_" + toggles[i].underscore();
+          var id = uniqueId();
           var html = $("<div></div>");
           var input = $("<input type='checkbox' id='" + id + "' />");
           var label = $("<label for='" + id + "'>" + toggles[i].humanize() + "</label>");
@@ -546,7 +555,7 @@ var Exemplar = function() {
         }
       };
       
-      var drawOptions = function(options) {
+      var drawOptions = function(view, options) {
         for (var i in options) {
           var id = "option_" + i.underscore();
           var html = $("<div></div>");
@@ -577,18 +586,30 @@ var Exemplar = function() {
       var populate = function() {
         if (!view || !view.builder) return;
         this.$.empty();
-
-        drawLabels.call(this, view.builder.labels);
-        drawToggles.call(this, view.builder.toggles, view.builder.required);
-        drawOptions.call(this, view.builder.options);
         
-        if (views[(view.builder.dataType || "").camelize()]) {
-          var input = $("<button>Add " + view.builder.dataType.humanize() + "</button>");
-          input.click(function() {
-            view.addData();
-          });
-          this.$.append(input);
-        }
+        var self = this;
+
+        // Traverse Tree and gather subviews' inspector fields
+        var drawInputs = function(view) {
+          drawLabels.call(self, view, view.builder.labels);
+          drawToggles.call(self, view, view.builder.toggles, view.builder.required);
+          drawOptions.call(self, view, view.builder.options);
+
+          if (views[(view.builder.dataType || "").camelize()]) {
+            var input = $("<button>Add " + view.builder.dataType.humanize() + "</button>");
+            input.click(function() {
+              view.addData();
+            });
+            self.$.append(input);
+          }
+
+          self.$.append("<hr />")
+
+          for (var v in view.subviews)
+            if (view.subviews[v])
+              drawInputs(view.subviews[v]);
+        };
+        drawInputs(view);
       };
 
       this.__defineSetter__('view', function(val) {
@@ -607,7 +628,7 @@ var Exemplar = function() {
         populate.call(this);
       });
     };
-    
+
     var Toolbar = function() {
       var addScreen = $("<button class='add-screen'>Add Screen</button>");
       var scale = $("<input type='range' class='scale' value='100' />");
@@ -647,4 +668,3 @@ var Exemplar = function() {
 
   interface = new Interface();
 };
-
