@@ -304,6 +304,7 @@ var Exemplar = function() {
     });
 
     this.update();
+    for (var i = 0; i < config.data.length; i++) this.addData(config.data[i]);
   };
 
   views.StatusBar = function() {
@@ -364,6 +365,7 @@ var Exemplar = function() {
   
   views.TableViewGroup = function(config) {
     this.__proto__ = new views.View('table-view-group', $.extend({
+      data: [{}, {}],
       toggles: {'table-view-header': true, 'table-view-footer': true}
     }, config), {
       toggles: ['table-view-header', 'data-views', 'table-view-footer'],

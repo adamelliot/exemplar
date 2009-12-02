@@ -115,16 +115,19 @@ h1 {
     text-align: center;
     border-bottom: 1px solid #2d3642;
     height: 19px;
-    line-height: 21px;
+    line-height: 17px;
     font-weight: bold;
     font-size: 12px;
-    padding: 0 6px; }
+    padding: 0px 6px; }
     #canvas .status-bar .network {
-      float: left; }
+      float: left;
+      padding: 2px 0 0 0; }
     #canvas .status-bar .time {
-      margin: 0 60px; }
+      margin: 0 60px;
+      padding: 2px 0 0 0; }
     #canvas .status-bar .battery {
-      float: right; }
+      float: right;
+      padding: 2px 0 0 0; }
   #canvas .navigation-bar > .title {
     margin: 0 90px; }
   #canvas .navigation-bar > .edit {
