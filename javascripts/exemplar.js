@@ -416,10 +416,6 @@ var Exemplar = function() {
   views.NavigationBar = function(config) {
     this.__proto__ = new views.View('navigation-bar', $.extend({
       configs: {
-        back: {
-          options: {style: 'back-button'},
-          labels: {title: 'Back'}
-        }, 
         edit: {
           options: {style: 'done-button'},
           labels: {title: 'Edit'}
@@ -475,7 +471,7 @@ var Exemplar = function() {
   views.TableViewGroup = function(config) {
     this.__proto__ = new views.View('table-view-group', $.extend({
       data: [{}, {}],
-      toggles: {'table-view-header': true, 'table-view-footer': true}
+      toggles: {'table-view-header': true}
     }, config), {
       toggles: ['table-view-header', 'data-views', 'table-view-footer'],
       dataType: 'table-view-cell'
@@ -811,7 +807,7 @@ var Exemplar = function() {
       });
 
       scale.change(function() {
-        application.scale = (parseFloat($(this).val()) + 25) / 125;
+        application.scale = (parseFloat($(this).val()) + 50) / 150;
       });
     };
 
