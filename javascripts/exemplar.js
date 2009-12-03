@@ -39,7 +39,7 @@ var Exemplar = function() {
   
   // This collection is used to dynamically create view objects.
   var views = {};
-  var interface;
+  var interface, remover;
 
   /**
    * Draws an arrow in a canvas element from one point to another and returns
@@ -184,6 +184,29 @@ var Exemplar = function() {
 
       var insert = this.$.prepend, target = this.$;
       var view = new type(config);
+      var self = this;
+
+      view.$.mouseover(function(event) {
+        remover.show();
+        remover.css({
+          left: view.$.offset().left - 16,
+          top: view.$.offset().top - 16
+        });
+
+        remover.unbind('click');
+        remover.click(function(event) {
+          self.removeData(view);
+          event.stopPropagation();
+        })
+        
+        event.stopPropagation();
+      });
+      
+      view.$.mouseout(function(event) {
+        remover.hide();
+        event.stopPropagation();
+      });
+
       view.parent = self;
 
       if (dataViews.length > 0) {
@@ -195,7 +218,7 @@ var Exemplar = function() {
       } else {
         view.$.addClass("first");
         view.$.addClass("last");
-        
+
         for (var i = 0; i < builder.toggles.length; i++) {
           if (subviews[builder.toggles[i]]) {
             target = subviews[builder.toggles[i]].$;
@@ -207,7 +230,7 @@ var Exemplar = function() {
       }
       
       dataViews.push(view);
-
+      
       var stored = false;
       for (var i = 0; i < this.config.data.length; i++)
         if (this.config.data[i] == config) {
@@ -217,11 +240,29 @@ var Exemplar = function() {
         }
 
       if (!stored) this.config.data.push(view.config);
-      
+
       insert.call(target, view.$);
       // Update shit that needs sizing info
-      view.update();
+      this.update();
     };
+
+    /**
+     * Attempts to remove a view from this view's data. If the view is not
+     * found nothing happens.
+     */
+    this.removeData = function(target) {
+      for (var i = 0; i < dataViews.length; i++)
+        if (dataViews[i] == target) {
+          if (i == 0 && dataViews[i + 1])
+            dataViews[i + 1].$.addClass('first');
+          else if (i == (dataViews.length - 1) && dataViews[i - 2])
+            dataViews[i - 1].$.addClass('last');
+
+          this.config.data.splice(i, 1);
+          dataViews.splice(i, 1);
+          target.destroy();
+        }
+    }
 
     /**
      * Generally called from the inspector to set new config vars.
@@ -235,6 +276,12 @@ var Exemplar = function() {
       var autoSizeList = [];
       var size = this.$.height();
       var changedViews = false;
+
+      // Update All the views first (These are kinda like a hammer for a fly...but it works)
+      for (var i in subviews)
+        subviews[i].update();
+      for (var i = 0; i < dataViews.length; i++)
+        dataViews[i].update();
 
       // Create the internal views
       for (var i = 0; i < builder.toggles.length; i++) {
@@ -277,7 +324,7 @@ var Exemplar = function() {
 
         var subview = subviews[name];
         if (subview) {
-          if (subview.config.autoSize === true)
+          if (subview.builder.autoSize === true)
             autoSizeList.push(subview);
           else
             size -= subview.$.outerHeight();
@@ -302,6 +349,15 @@ var Exemplar = function() {
         set = builder.options[i];
         for (var j = 0; j < set.length; j++) this.$.removeClass(set[j]);
         this.$.addClass(config.options[i] || set[0] || "");
+      }
+
+      // Only horizontally size inline-block elements
+      if (dataViews[0] && dataViews[0].$.css("display") == 'inline-block' && this.builder.autoSizeData) {
+        // The + 2 cleans up lots of views, as rounding down looks a little better
+        var padding = parseInt(this.$.css("padding-left")) + parseInt(this.$.css("padding-right")) + 2;
+        var width = ((this.$.innerWidth() - padding) / dataViews.length);
+        for (var i = 0; i < dataViews.length; i++)
+          dataViews[i].$.css({width: width});
       }
 
       if (interface && changedViews)
@@ -376,13 +432,38 @@ var Exemplar = function() {
     this.update();
   };
 
+  views.ScopeBar = function(config) {
+    this.__proto__ = new views.View('scope-bar', $.extend({
+      data: [{options: {style:'selected'}}, {}],
+    }, config), {
+      dataType: 'scope-bar-button',
+      autoSizeData: true
+    });
+  };
+
+  views.ScopeBarButton = function(config) {
+    this.__proto__ = new views.View('scope-bar-button', $.extend({
+      labels: {title: "Scope"}
+    }, config), {
+      labels: ['title'],
+      options: {style: ['unselected', 'selected']}
+    });
+
+    this.$.append("<div class='title'></div>");
+    this.update();
+  };
+
+  views.TextView = function(config) {
+    this.__proto__ = new views.View('text-view', config);
+  };
+
   views.TextView = function(config) {
     this.__proto__ = new views.View('text-view', config);
   };
 
   views.TableViewSearch = function(config) {
     this.__proto__ = new views.View('table-view-search', config);
-    this.$.append("<input type='search' placeholder='Search' autosave='iphone' results='5' />");
+    this.$.append("<input type='search' placeholder='Search' autosave='iphone' results='5' disabled='disabled' />");
   };
   
   views.TableViewGroup = function(config) {
@@ -410,11 +491,17 @@ var Exemplar = function() {
     this.__proto__ = new views.View('table-view-cell', $.extend({
       labels: {title: 'Table View Cell'}
     }, config), {
-      labels: ['title']
+      labels: ['title', 'right', 'content'],
+      options: {
+        disclosure: ['disclosure', 'no-disclosure'],
+        style: ['simple', 'complex']
+      }
     });
 
     this.$.append("<div class='disclosure'></div>");
+    this.$.append("<div class='right'></div>");
     this.$.append("<div class='title'></div>");
+    this.$.append("<div class='content'></div>");
     this.update();
   };
 
@@ -430,12 +517,11 @@ var Exemplar = function() {
   };
 
   views.TableView = function(config) {
-    this.__proto__ = new views.View('table-view', $.extend({
-      autoSize: true
-    }, config), {
-      toggles: ['table-view-search'],
+    this.__proto__ = new views.View('table-view', config, {
+      toggles: ['table-view-search', 'scope-bar'],
       dataType: 'table-view-group',
-      options: {style: ['plain-table', 'grouped-table']}
+      options: {style: ['plain-table', 'grouped-table']},
+      autoSize: true
     });
   };
 
@@ -443,10 +529,9 @@ var Exemplar = function() {
    * This is a special view who's vertical size is auto adjusted.
    */
   views.ContentView = function(config) {
-    this.__proto__ = new views.View('content-view', $.extend({
+    this.__proto__ = new views.View('content-view', config, {
+      toggles: ['content-view', 'table-view'],
       autoSize: true
-    }, config), {
-      toggles: ['content-view', 'table-view']
     });
   };
   
@@ -478,7 +563,7 @@ var Exemplar = function() {
     this.__proto__ = new views.View('window', $.extend({
       toggles: {'status-bar': true, 'navigation-bar': true, 'content-view': true}
     }, config), {
-      toggles:  ['status-bar', 'navigation-bar', 'content-view', 'toolbar', 'tab-bar', 'keyboard'],
+      toggles:  ['status-bar', 'navigation-bar', 'scope-bar', 'content-view', 'toolbar', 'tab-bar', 'keyboard'],
       required: {'content-view': true}
     });
     this.update();
@@ -505,7 +590,6 @@ var Exemplar = function() {
     this.__proto__ = new Element('application', null, root);
 
     var data = document.cookie.split("; ");
-    console.log(data);
     var cookies = {};
     for (var i = 0; i < data.length; i++) {
       var pair = data[i].split("=");
@@ -515,7 +599,6 @@ var Exemplar = function() {
     var config;
     if (cookies.exemplar)
       config = $.evalJSON(cookies.exemplar);
-    console.log(config);
 
     var scale = 1.0;
     var windowSet = new views.WindowSet(config);
@@ -534,9 +617,7 @@ var Exemplar = function() {
 
     var self = this;
     self.addElement(windowSet);
-    // Sizes are messed if the elements aren't on the dom when created
-    for (var i = 0; i < windowSet.dataViews.length; i++)
-      windowSet.dataViews[i].update();
+    windowSet.update();
 
     this.save = function() {
       document.cookie = "exemplar=" + encodeURIComponent($.toJSON(windowSet.config));
@@ -565,9 +646,19 @@ var Exemplar = function() {
       this.__proto__ = new Element('inspector', null, root);
       this.$.draggable({containment: '#canvas'});
 
-      var selector = $("<div id='selector'></div>"), view;
+      var view;
+      var selector = $("<div id='selector'></div>");
+      remover = $("<div id='remove_button'></div>");
+
       $(root).append(selector);
+      $(root).append(remover);
+
       selector.hide();
+      remover.hide();
+      
+      remover.mouseover(function() {
+        remover.show();
+      });
       
       var baseNumber = 0;
       var uniqueId = function() {
@@ -660,7 +751,7 @@ var Exemplar = function() {
       this.update = function() {
         if (!view || !view.builder) return;
         this.$.empty();
-        
+
         var self = this;
 
         // Traverse Tree and gather subviews' inspector fields
@@ -694,20 +785,19 @@ var Exemplar = function() {
           top:    view.$.offset().top - (view.$.outerHeight() - (view.$.outerHeight() * application.scale)) / 2,
           width:  view.$.outerWidth(),
           height: view.$.outerHeight(),
-          
+
           "-webkit-transform": "scale(" + application.scale + ")"
         });
         selector.show();
         // FIXME: Without the fade out nested elements become untouchable
         selector.fadeOut("fast");
-        
+
         this.update();
       });
     };
 
     var Toolbar = function() {
       var addScreen = $("<button class='add-screen'>Add Window</button>");
-      var save = $("<button class='save'>Save</button>");
       var reset = $("<button class='reset'>Reset</button>");
       var scale = $("<input type='range' class='scale' value='100' />");
 
@@ -715,7 +805,6 @@ var Exemplar = function() {
 
       this.$.append(scale);
       this.$.append(addScreen);
-      this.$.append(save);
       this.$.append(reset);
 
       reset.click(function() {
@@ -725,9 +814,9 @@ var Exemplar = function() {
         }
       });
 
-      save.click(function() {
+      setInterval(function() {
         application.save();
-      });
+      }, 500);
 
       addScreen.click(function() {
         application.createWindow();

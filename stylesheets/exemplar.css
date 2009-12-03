@@ -78,17 +78,18 @@ h1 {
   z-index: 99;
   background: rgba(255, 255, 255, 0.2); }
 
-.remove-button {
-  background: url(../iomages/remove-button.png);
+#remove_button {
+  background: url(../images/remove-button.png);
   position: fixed;
   width: 30px;
   height: 30px; }
-  .remove-button:active {
-    background: url(../iomages/remove-button-pressed.png); }
+  #remove_button:active {
+    background: url(../images/remove-button-pressed.png); }
 
 /* iPhone Elements */
 #canvas {
   /* Toolbar Button */
+  /* Scope Bar Stuff */
   /* Table Stuff */
   /* Plain Table */
   /* Grouped Table */
@@ -100,7 +101,7 @@ h1 {
     border: 1px dashed rgba(0, 0, 0, 0.1);
     white-space: nowrap; }
   #canvas .window-set {
-    width: 1440px;
+    min-width: 1080px;
     white-space: nowrap; }
     #canvas .window-set > .title {
       color: #333;
@@ -118,20 +119,20 @@ h1 {
     background: #eee;
     float: left;
     margin: 20px; }
-  #canvas .navigation-bar, #canvas .content {
+  #canvas .navigation-bar {
     border-bottom: 1px solid #2d3642; }
   #canvas .navigation-bar, #canvas .toolbar {
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#b0bccd), to(#6d84a2), color-stop( 0.5, #879bb4 ), color-stop( 0.5, #7f95b0 ) );
-    text-shadow: 0px -1px 0px #555;
-    color: #fff;
+    text-shadow: 0px -1px 0px #555555;
+    color: white;
     text-align: center;
     height: 42px;
     line-height: 42px;
     border-top: 1px solid #cdd5df; }
   #canvas .status-bar {
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#f2f8fa), to(#c9d0d3) );
-    text-shadow: 0px 1px 0px #fff;
-    color: #333;
+    text-shadow: 0px 1px 0px white;
+    color: #333333;
     text-align: center;
     border-bottom: 1px solid #2d3642;
     height: 19px;
@@ -173,12 +174,13 @@ h1 {
     -moz-border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     -webkit-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
-    text-shadow: 0px -1px 0px #555;
-    color: #fff;
+    text-shadow: 0px -1px 0px #555555;
+    color: white;
     text-align: center;
     margin: 6px;
+    padding: 0 8px;
     min-width: 30px;
-    font-size: 14px; }
+    font-size: 13px; }
   #canvas .bordered-button {
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8ea4c1), to(#4a6c9b), color-stop( 0.5, #5777a2 ), color-stop( 0.5, #476999 ) ); }
   #canvas .done-button {
@@ -196,6 +198,42 @@ h1 {
     margin: 5px;
     -webkit-border-image: url(../images/back-button-bg.png) 0 7 0 14 stretch stretch;
     border-width: 0 7px 0 14px; }
+  #canvas .scope-bar {
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#c0c9cf), to(#aab7bf) );
+    height: 42px;
+    padding: 0 8px;
+    border-top: 1px solid #cdd4d9;
+    border-bottom: 1px solid #8092a0; }
+  #canvas .scope-bar-button {
+    border: 1px solid rgba(60, 75, 100, 0.6);
+    -webkit-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
+    border-right-style: none;
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    font-weight: bold;
+    min-width: 30px;
+    display: inline-block;
+    margin: 6px 0; }
+    #canvas .scope-bar-button > .title {
+      padding: 0 8px; }
+  #canvas .scope-bar-button.unselected {
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#f2f8fa), to(#c9d0d3) );
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.6);
+    color: #3f5c84;
+    text-align: center; }
+  #canvas .scope-bar-button.selected {
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8b9bb0), to(#657a95) );
+    text-shadow: 0px -1px 0px rgba(64, 64, 64, 0.4);
+    color: white;
+    text-align: center; }
+  #canvas .scope-bar-button.first {
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px; }
+  #canvas .scope-bar-button.last {
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    border-right-style: solid; }
   #canvas .table-view-search {
     height: 42px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e0e4e7), to(#b4bec6));
@@ -205,21 +243,39 @@ h1 {
       margin: 9px;
       font-size: 18px;
       width: 300px; }
-  #canvas .disclosure {
-    width: 13px;
-    height: 19px;
-    margin: 13px 0px 10px 6px;
-    float: right;
-    background: url(../images/disclosure.png); }
   #canvas .table-view {
     overflow: hidden; }
     #canvas .table-view .table-view-cell {
-      font-size: 18px;
       min-height: 43px;
-      background: #fff;
+      background: #fff; }
+      #canvas .table-view .table-view-cell .right {
+        font-size: 14pt;
+        font-weight: normal;
+        line-height: 43px;
+        float: right;
+        color: #aaa !important; }
+    #canvas .table-view .table-view-cell.simple {
       font-weight: bold;
-      line-height: 43px;
-      padding: 0 18px; }
+      padding: 0 18px;
+      font-size: 14pt;
+      line-height: 43px; }
+      #canvas .table-view .table-view-cell.simple .content {
+        display: none; }
+    #canvas .table-view .table-view-cell.complex {
+      font-weight: bold;
+      padding: 3px 18px 0 18px;
+      font-size: 13pt;
+      line-height: 20px; }
+      #canvas .table-view .table-view-cell.complex .content {
+        color: #666;
+        font-size: 11pt;
+        font-weight: normal; }
+    #canvas .table-view .table-view-cell.disclosure .disclosure {
+      width: 13px;
+      height: 19px;
+      margin: 13px 0px 10px 6px;
+      float: right;
+      background: url(../images/disclosure.png); }
   #canvas .table-view.plain-table {
     background: url(../images/table-bg.png); }
     #canvas .table-view.plain-table .table-view-group {
@@ -237,6 +293,8 @@ h1 {
       font-size: 17px; }
     #canvas .table-view.plain-table .table-view-cell {
       border-bottom: 1px solid #ddd; }
+    #canvas .table-view.plain-table .table-view-cell.last {
+      border-bottom: 1px solid #999 !important; }
   #canvas .table-view.grouped-table {
     background: url(../images/grouped-table-bg.png); }
     #canvas .table-view.grouped-table .table-view-header, #canvas .table-view.grouped-table .table-view-footer {

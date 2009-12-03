@@ -10,11 +10,19 @@
   :-webkit-border-bottom-left-radius = !radius
   :-webkit-border-bottom-right-radius = !radius
 
+=rounded-left(!radius = 14px)
+  :-webkit-border-top-left-radius = !radius
+  :-webkit-border-bottom-left-radius = !radius
+
+=rounded-right(!radius = 14px)
+  :-webkit-border-top-right-radius = !radius
+  :-webkit-border-bottom-right-radius = !radius
+
 =box-shadow(!distance = 1px, !radius = 5px, !color = 32, !alpha = 0.6)
   :-webkit-box-shadow = 0px !distance !radius rgba(!color, !color, !color, !alpha)
 
-=box-bezel
-  :border 1px solid rgba(0, 0, 0, 0.4)
+=box-bezel(!color = rgba(0, 0, 0, 0.4))
+  :border = 1px "solid" !color
   :-webkit-box-shadow = 0px 1px 1px rgba(255, 255, 255, 0.4)
 
 =background-gradient(!from = #b0bccd, !to = #6d84a2)
@@ -27,14 +35,14 @@
   :text-shadow 0px -1px 2px rgba(0, 0, 0, 1.0)
   :color #fff
 
-=light-bezeled-text
-  :text-shadow 0px -1px 0px #555
-  :color #fff
+=light-bezeled-text(!color = #fff, !shadow = #555)
+  :text-shadow = 0px -1px 0px !shadow
+  :color = !color
   :text-align center
 
-=dark-bezeled-text
-  :text-shadow 0px 1px 0px #fff
-  :color #333
+=dark-bezeled-text(!color = #333, !shadow = #fff)
+  :text-shadow = 0px 1px 0px !shadow
+  :color = !color
   :text-align center
 
 =min-rect(!width = 120px, !height = 160px)
@@ -133,13 +141,13 @@ h1
   :z-index 99
   :background rgba(255, 255, 255, 0.2)
 
-.remove-button
-  :background url(../iomages/remove-button.png)
+#remove_button
+  :background url(../images/remove-button.png)
   :position fixed
   :width 30px
   :height 30px
   &:active
-    :background url(../iomages/remove-button-pressed.png)
+    :background url(../images/remove-button-pressed.png)
 
 /* iPhone Elements */  
 
@@ -152,7 +160,7 @@ h1
     :white-space nowrap
 
   .window-set 
-    :width 1440px
+    :min-width 1080px
     :white-space nowrap
     > .title
       :color #333
@@ -171,7 +179,7 @@ h1
     :float left
     :margin 20px
 
-  .navigation-bar, .content
+  .navigation-bar
     :border-bottom 1px solid #2d3642
 
   .navigation-bar, .toolbar
@@ -235,8 +243,9 @@ h1
     +box-bezel
     +light-bezeled-text
     :margin 6px
+    :padding 0 8px
     :min-width 30px
-    :font-size 14px
+    :font-size 13px
 
   .bordered-button
     +shiney-background-gradient
@@ -259,6 +268,42 @@ h1
     :-webkit-border-image url(../images/back-button-bg.png) 0 7 0 14 stretch stretch
     :border-width 0 7px 0 14px
 
+  /* Scope Bar Stuff */
+
+  .scope-bar
+    +background-gradient(#c0c9cf, #aab7bf)
+    :height 42px
+    :padding 0 8px
+    :border-top 1px solid #cdd4d9
+    :border-bottom 1px solid #8092a0
+
+  .scope-bar-button
+    +box-bezel(rgba(60, 75, 100, 0.6))
+    :border-right-style none
+    :height 27px
+    :line-height 27px
+    :font-size 13px
+    :font-weight bold
+    :min-width 30px
+    :display inline-block
+    :margin 6px 0
+    > .title
+      :padding 0 8px
+
+  .scope-bar-button.unselected
+    +background-gradient(#f2f8fa, #c9d0d3)
+    +dark-bezeled-text(#3f5c84, rgba(255, 255, 255, 0.6))
+  
+  .scope-bar-button.selected
+    +background-gradient(#8b9bb0, #657a95)
+    +light-bezeled-text(#fff, rgba(64, 64, 64, 0.4))
+
+  .scope-bar-button.first
+    +rounded-left(5px)
+
+  .scope-bar-button.last
+    +rounded-right(5px)
+    :border-right-style solid
 
   /* Table Stuff */
 
@@ -272,23 +317,45 @@ h1
       font-size: 18px
       width: 300px
 
-  .disclosure
-    width: 13px
-    height: 19px
-    margin: 13px 0px 10px 6px
-    float: right
-    background: url(../images/disclosure.png)
-
   .table-view
     overflow: hidden
     
     .table-view-cell
-      :font-size 18px
       :min-height 43px
       :background #fff
+      
+      .right
+        :font-size 14pt
+        :font-weight normal
+        :line-height 43px
+        :float right
+        :color #aaa !important
+
+    .table-view-cell.simple
       :font-weight bold
-      :line-height 43px
       :padding 0 18px
+      :font-size 14pt
+      :line-height 43px
+      .content
+        :display none
+
+    .table-view-cell.complex
+      :font-weight bold
+      :padding 3px 18px 0 18px
+      :font-size 13pt
+      :line-height 20px
+      .content
+        :color #666
+        :font-size 11pt
+        :font-weight normal
+
+    .table-view-cell.disclosure
+      .disclosure
+        width: 13px
+        height: 19px
+        margin: 13px 0px 10px 6px
+        float: right
+        background: url(../images/disclosure.png)
 
   /* Plain Table */
 
@@ -311,7 +378,10 @@ h1
       font-size: 17px
 
     .table-view-cell
-      border-bottom: 1px solid #ddd
+      :border-bottom 1px solid #ddd
+    
+    .table-view-cell.last
+      :border-bottom 1px solid #999 !important
 
   /* Grouped Table */
 
