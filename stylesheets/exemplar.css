@@ -82,15 +82,23 @@ h1 {
   /* Toolbar Button */
   /* Table Stuff */
   /* Plain Table */
-  /* Grouped Table */ }
+  /* Grouped Table */
+  /* Tab Bar */ }
   #canvas #application {
     position: fixed;
-    white-space: nowrap;
     left: 200px;
     top: 30px;
     border: 1px dashed #888; }
-  #canvas .window-set .title {
-    font-size: 150%; }
+  #canvas .window-set {
+    white-space: nowrap; }
+    #canvas .window-set > .title {
+      color: #333;
+      margin: 20px 30px 2px 30px;
+      text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+      clear: both;
+      font-weight: bold;
+      font-size: 150%;
+      font: "Lucida Grande"; }
   #canvas .window {
     -webkit-box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5);
     width: 320px;
@@ -102,7 +110,7 @@ h1 {
   #canvas .navigation-bar, #canvas .content {
     border-bottom: 1px solid #2d3642; }
   #canvas .navigation-bar, #canvas .toolbar {
-    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#b0bccd), to(#6d84a2) );
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#b0bccd), to(#6d84a2), color-stop( 0.5, #879bb4 ), color-stop( 0.5, #7f95b0 ) );
     text-shadow: 0px -1px 0px #555;
     color: #fff;
     text-align: center;
@@ -139,7 +147,6 @@ h1 {
     border-bottom: 1px solid #2d3642; }
   #canvas .toolbar {
     height: 42px;
-    bottom: 0;
     padding: 0 8px; }
   #canvas .keyboard {
     background: url(../images/keyboard.png);
@@ -205,12 +212,12 @@ h1 {
   #canvas .table-view.plain-table {
     background: url(../images/table-bg.png); }
     #canvas .table-view.plain-table .table-view-group {
-      -webkit-box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.4); }
+      -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3); }
     #canvas .table-view.plain-table .table-view-header, #canvas .table-view.plain-table .table-view-footer {
+      background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8) );
       color: #fff;
       padding-left: 20px;
       text-shadow: 0px 1px 0px #555;
-      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8));
       border-top: 1px solid #a5b1ba;
       border-bottom: 1px solid #989ea4;
       line-height: 20px;
@@ -230,12 +237,13 @@ h1 {
       font-weight: normal;
       height: 25px;
       font-size: 18px; }
-    #canvas .table-view.grouped-table .table-view-group .table-view-cell:nth-child(2) {
+    #canvas .table-view.grouped-table .table-view-group > .table-view-cell:first-child {
+      background-color: red;
       -webkit-border-top-left-radius: 14px;
       -webkit-border-top-right-radius: 14px;
       margin-top: 7px;
       border-top: 1px solid #aaa; }
-    #canvas .table-view.grouped-table .table-view-group .table-view-cell:nth-last-child(2) {
+    #canvas .table-view.grouped-table .table-view-group div[class~=table-view-cell]:nth-last-child(2) {
       -webkit-border-bottom-left-radius: 14px;
       -webkit-border-bottom-right-radius: 14px;
       margin-bottom: 7px; }
@@ -245,3 +253,7 @@ h1 {
       border-bottom: 1px solid #aaa;
       border-left: 1px solid #aaa;
       border-right: 1px solid #aaa; }
+  #canvas .tab-bar {
+    background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#2e2e2e), to(black), color-stop( 0.5, #151515 ), color-stop( 0.5, black ) );
+    height: 48px;
+    border-top: 1px solid #434343; }

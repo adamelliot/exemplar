@@ -423,6 +423,12 @@ var Exemplar = function() {
       toggles: ['content-view', 'table-view']
     });
   };
+  
+  views.TabBar =  function(config) {
+    this.__proto__ = new views.View('tab-bar', config, {
+      dataType: 'tab-bar-button'
+    });
+  };
 
   views.Toolbar = function(config) {
     this.__proto__ = new views.View('toolbar', config, {
@@ -441,24 +447,38 @@ var Exemplar = function() {
     this.$.append("<div class='title'></div>");
     this.update();
   };
-
+  
   views.Window = function(config) {
     this.__proto__ = new views.View('window', $.extend({
       toggles: {'status-bar': true, 'navigation-bar': true, 'content-view': true}
     }, config), {
-      toggles:  ['status-bar', 'navigation-bar', 'content-view', 'toolbar', 'keyboard'],
+      toggles:  ['status-bar', 'navigation-bar', 'content-view', 'toolbar', 'tab-bar', 'keyboard'],
       required: {'content-view': true}
     });
   };
+
+  views.WindowSet = function(config) {
+    this.__proto__ = new views.View('window-set', $.extend({
+      data: [{}],
+      labels: {title: "New Application"}
+    }, config), {
+      labels: ['title'],
+      dataType: 'window'
+    });
+
+    this.$.prepend("<div class='title'></div>");
+    this.update();
+  }
   
   /**
-   * The collection of screens.
+   * The collection of window sets.
    */
   var Application = function(root) {
     root = root || "body";
     this.__proto__ = new Element('application', null, root);
 
     var scale = 1.0;
+    var windowSet = new views.WindowSet();
 
     this.$.draggable();
 
@@ -472,11 +492,13 @@ var Exemplar = function() {
     });
     this.__defineGetter__("scale", function() { return scale; });
 
+    this.addElement(windowSet);
+
     /**
      * Adds a new Screen to the Canvas
      */
     this.createWindow = function() {
-      this.addElement(new views.Window());
+      windowSet.addData();
     };
   };
 
@@ -671,7 +693,6 @@ var Exemplar = function() {
     inspector = new Inspector();
 
     application = new Application(canvas);
-    application.createWindow();
   };
 
   interface = new Interface();
