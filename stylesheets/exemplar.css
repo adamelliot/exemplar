@@ -94,7 +94,7 @@ h1 {
   /* Plain Table */
   /* Grouped Table */
   /* Tab Bar */ }
-  #canvas #application {
+  #canvas .application {
     position: fixed;
     left: 200px;
     top: 30px;

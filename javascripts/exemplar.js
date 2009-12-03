@@ -196,12 +196,17 @@ var Exemplar = function() {
         remover.unbind('click');
         remover.click(function(event) {
           self.removeData(view);
+          remover.hide();
           event.stopPropagation();
         })
         
         event.stopPropagation();
       });
       
+      view.$.mousedown(function() {
+        remover.hide();
+      });
+
       view.$.mouseout(function(event) {
         remover.hide();
         event.stopPropagation();
@@ -257,10 +262,11 @@ var Exemplar = function() {
             dataViews[i + 1].$.addClass('first');
           else if (i == (dataViews.length - 1) && dataViews[i - 2])
             dataViews[i - 1].$.addClass('last');
-
+            
           this.config.data.splice(i, 1);
           dataViews.splice(i, 1);
           target.destroy();
+          this.update();
         }
     }
 
@@ -572,36 +578,28 @@ var Exemplar = function() {
   views.WindowSet = function(config) {
     this.__proto__ = new views.View('window-set', $.extend({
       data: [{}],
-      labels: {title: "New Application"}
+      labels: {title: "New Window Set"}
     }, config), {
       labels: ['title'],
       dataType: 'window'
     });
 
     this.$.prepend("<div class='title'></div>");
+    this.$.append("<div style='clear:both'></div>");
     this.update();
   }
   
   /**
    * The collection of window sets.
    */
-  var Application = function(root) {
-    root = root || "body";
-    this.__proto__ = new Element('application', null, root);
-
-    var data = document.cookie.split("; ");
-    var cookies = {};
-    for (var i = 0; i < data.length; i++) {
-      var pair = data[i].split("=");
-      cookies[pair[0]] = decodeURIComponent(pair[1]);
-    }
-
-    var config;
-    if (cookies.exemplar)
-      config = $.evalJSON(cookies.exemplar);
+  views.Application = function(config) {
+    this.__proto__ = new views.View('application', $.extend({
+      data: [{}],
+    }, config), {
+      dataType: 'window-set'
+    });
 
     var scale = 1.0;
-    var windowSet = new views.WindowSet(config);
 
     this.$.draggable();
 
@@ -616,18 +614,8 @@ var Exemplar = function() {
     this.__defineGetter__("scale", function() { return scale; });
 
     var self = this;
-    self.addElement(windowSet);
-    windowSet.update();
-
     this.save = function() {
-      document.cookie = "exemplar=" + encodeURIComponent($.toJSON(windowSet.config));
-    };
-
-    /**
-     * Adds a new Screen to the Canvas
-     */
-    this.createWindow = function() {
-      windowSet.addData();
+      document.cookie = "exemplar=" + encodeURIComponent($.toJSON(self.config));
     };
   };
 
@@ -797,7 +785,7 @@ var Exemplar = function() {
     };
 
     var Toolbar = function() {
-      var addScreen = $("<button class='add-screen'>Add Window</button>");
+      var addScreen = $("<button class='add-window-set'>Add Window Set</button>");
       var reset = $("<button class='reset'>Reset</button>");
       var scale = $("<input type='range' class='scale' value='100' />");
 
@@ -819,7 +807,7 @@ var Exemplar = function() {
       }, 500);
 
       addScreen.click(function() {
-        application.createWindow();
+        application.addData();
       });
 
       scale.change(function() {
@@ -846,7 +834,20 @@ var Exemplar = function() {
     toolbar = new Toolbar(canvas.screenSet);
     inspector = new Inspector();
 
-    application = new Application(canvas);
+    var data = document.cookie.split("; ");
+    var cookies = {};
+    for (var i = 0; i < data.length; i++) {
+      var pair = data[i].split("=");
+      cookies[pair[0]] = decodeURIComponent(pair[1]);
+    }
+
+    var config;
+    if (cookies.exemplar)
+      config = $.evalJSON(cookies.exemplar);
+
+    application = new views.Application(config);
+    canvas.addElement(application);
+    application.update();
   };
 
   interface = new Interface();
