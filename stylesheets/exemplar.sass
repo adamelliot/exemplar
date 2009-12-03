@@ -152,6 +152,7 @@ h1
     :white-space nowrap
 
   .window-set 
+    :width 1440px
     :white-space nowrap
     > .title
       :color #333
@@ -327,13 +328,12 @@ h1
       height: 25px
       font-size: 18px
 
-    .table-view-group > .table-view-cell:first-child
-      :background-color red
+    .table-view-group > .table-view-cell.first
       +rounded-top
       :margin-top 7px
       :border-top 1px solid #aaa
 
-    .table-view-group div[class~=table-view-cell]:nth-last-child(2)
+    .table-view-group > .table-view-cell.last
       +rounded-bottom
       :margin-bottom 7px
 

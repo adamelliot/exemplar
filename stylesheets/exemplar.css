@@ -97,9 +97,10 @@ h1 {
     position: fixed;
     left: 200px;
     top: 30px;
-    border: 1px dashed rgba(0, 0, 0, 0.2);
+    border: 1px dashed rgba(0, 0, 0, 0.1);
     white-space: nowrap; }
   #canvas .window-set {
+    width: 1440px;
     white-space: nowrap; }
     #canvas .window-set > .title {
       color: #333;
@@ -247,13 +248,12 @@ h1 {
       font-weight: normal;
       height: 25px;
       font-size: 18px; }
-    #canvas .table-view.grouped-table .table-view-group > .table-view-cell:first-child {
-      background-color: red;
+    #canvas .table-view.grouped-table .table-view-group > .table-view-cell.first {
       -webkit-border-top-left-radius: 14px;
       -webkit-border-top-right-radius: 14px;
       margin-top: 7px;
       border-top: 1px solid #aaa; }
-    #canvas .table-view.grouped-table .table-view-group div[class~=table-view-cell]:nth-last-child(2) {
+    #canvas .table-view.grouped-table .table-view-group > .table-view-cell.last {
       -webkit-border-bottom-left-radius: 14px;
       -webkit-border-bottom-right-radius: 14px;
       margin-bottom: 7px; }

@@ -177,11 +177,19 @@ var Exemplar = function() {
       if (!type) return;
 
       var insert = this.$.prepend, target = this.$;
+      var view = new type(config);
+      view.parent = self;
 
       if (dataViews.length > 0) {
         target = dataViews[dataViews.length - 1].$;
         insert = target.after;
+
+        target.removeClass("last");
+        view.$.addClass("last");
       } else {
+        view.$.addClass("first");
+        view.$.addClass("last");
+        
         for (var i = 0; i < builder.toggles.length; i++) {
           if (subviews[builder.toggles[i]]) {
             target = subviews[builder.toggles[i]].$;
@@ -192,8 +200,6 @@ var Exemplar = function() {
         }
       }
       
-      var view = new type(config);
-      view.parent = self;
       dataViews.push(view);
 
       var stored = false;
@@ -520,6 +526,7 @@ var Exemplar = function() {
     this.__defineGetter__("scale", function() { return scale; });
 
     this.addElement(windowSet);
+    windowSet.update();
 
     this.save = function() {
       document.cookie = "exemplar=" + encodeURIComponent($.toJSON(windowSet.config));
@@ -673,10 +680,12 @@ var Exemplar = function() {
         view = val;
         
         selector.css({
-          left:   view.$.offset().left,
-          top:    view.$.offset().top,
+          left:   view.$.offset().left - (view.$.outerWidth() - (view.$.outerWidth() * application.scale)) / 2,
+          top:    view.$.offset().top - (view.$.outerHeight() - (view.$.outerHeight() * application.scale)) / 2,
           width:  view.$.outerWidth(),
           height: view.$.outerHeight(),
+          
+          "-webkit-transform": "scale(" + application.scale + ")"
         });
         selector.show();
         // FIXME: Without the fade out nested elements become untouchable
@@ -701,15 +710,15 @@ var Exemplar = function() {
 
       reset.click(function() {
         if (confirm("This will clear all your data, are you sure?")) {
-          document.cookie = 'exemplar='
+          document.cookie = 'exemplar=';
           location.reload();
         }
       });
-      
+
       save.click(function() {
         application.save();
       });
-      
+
       addScreen.click(function() {
         application.createWindow();
       });
