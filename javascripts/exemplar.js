@@ -196,7 +196,19 @@ var Exemplar = function() {
       view.parent = self;
       dataViews.push(view);
 
+      var stored = false;
+      for (var i = 0; i < this.config.data.length; i++)
+        if (this.config.data[i] == config) {
+          this.config.data[i] = view.config;
+          stored = true;
+          break;
+        }
+
+      if (!stored) this.config.data.push(view.config);
+      
       insert.call(target, view.$);
+      // Update shit that needs sizing info
+      view.update();
     };
 
     /**
@@ -219,8 +231,9 @@ var Exemplar = function() {
         if (subviews[name]) {
           if (config.toggles[name] !== true) {
             subviews[name].destroy();
+            delete this.config.configs[name];
+            delete subviews[name];
             changedViews = true;
-            subviews[name] = undefined;
           }
           else {
             target = subviews[name].$;
@@ -239,6 +252,7 @@ var Exemplar = function() {
             if (type) {
               changedViews = true;
               var view = subviews[name] = new type(config.configs[name]);
+              config.configs[name] = view.config;
               view.parent = self;
               if (className != name) view.$.addClass(name);
 
@@ -477,8 +491,21 @@ var Exemplar = function() {
     root = root || "body";
     this.__proto__ = new Element('application', null, root);
 
+    var data = document.cookie.split("; ");
+    console.log(data);
+    var cookies = {};
+    for (var i = 0; i < data.length; i++) {
+      var pair = data[i].split("=");
+      cookies[pair[0]] = decodeURIComponent(pair[1]);
+    }
+
+    var config;
+    if (cookies.exemplar)
+      config = $.evalJSON(cookies.exemplar);
+    console.log(config);
+
     var scale = 1.0;
-    var windowSet = new views.WindowSet();
+    var windowSet = new views.WindowSet(config);
 
     this.$.draggable();
 
@@ -493,6 +520,10 @@ var Exemplar = function() {
     this.__defineGetter__("scale", function() { return scale; });
 
     this.addElement(windowSet);
+
+    this.save = function() {
+      document.cookie = "exemplar=" + encodeURIComponent($.toJSON(windowSet.config));
+    };
 
     /**
      * Adds a new Screen to the Canvas
@@ -656,13 +687,28 @@ var Exemplar = function() {
     };
 
     var Toolbar = function() {
-      var addScreen = $("<button class='add-screen'>Add Screen</button>");
+      var addScreen = $("<button class='add-screen'>Add Window</button>");
+      var save = $("<button class='save'>Save</button>");
+      var reset = $("<button class='reset'>Reset</button>");
       var scale = $("<input type='range' class='scale' value='100' />");
 
       this.__proto__ = new Element('toolbar', null, root);
 
       this.$.append(scale);
       this.$.append(addScreen);
+      this.$.append(save);
+      this.$.append(reset);
+
+      reset.click(function() {
+        if (confirm("This will clear all your data, are you sure?")) {
+          document.cookie = 'exemplar='
+          location.reload();
+        }
+      });
+      
+      save.click(function() {
+        application.save();
+      });
       
       addScreen.click(function() {
         application.createWindow();

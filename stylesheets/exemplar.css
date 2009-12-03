@@ -59,12 +59,13 @@ h1 {
   border-top: 1px solid #999;
   z-index: 101;
   padding: 10px; }
+  #toolbar button {
+    margin: 0 6px;
+    float: right; }
   #toolbar input[type=range].scale {
     float: left;
     -webkit-appearance: slider-horizontal;
     width: 150px; }
-  #toolbar button.add-screen {
-    float: right; }
 
 #selector {
   -webkit-border-radius: 8px;
@@ -77,6 +78,14 @@ h1 {
   z-index: 99;
   background: rgba(255, 255, 255, 0.2); }
 
+.remove-button {
+  background: url(../iomages/remove-button.png);
+  position: fixed;
+  width: 30px;
+  height: 30px; }
+  .remove-button:active {
+    background: url(../iomages/remove-button-pressed.png); }
+
 /* iPhone Elements */
 #canvas {
   /* Toolbar Button */
@@ -88,7 +97,8 @@ h1 {
     position: fixed;
     left: 200px;
     top: 30px;
-    border: 1px dashed #888; }
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    white-space: nowrap; }
   #canvas .window-set {
     white-space: nowrap; }
     #canvas .window-set > .title {
