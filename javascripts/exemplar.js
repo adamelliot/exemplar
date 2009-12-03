@@ -162,6 +162,12 @@ var Exemplar = function() {
     this.__defineGetter__("subviews", function() { return subviews; });
 
     /**
+     * Return a list of the attached data views. Subviews are named, where
+     * as data views are a list.
+     */
+    this.__defineGetter__("dataViews", function() { return dataViews; });
+
+    /**
      * Used for traversal of the the heirachy when saving / destroying
      * and updating the inspector
      */
@@ -319,8 +325,8 @@ var Exemplar = function() {
       }
     });
 
-    this.update();
     for (var i = 0; i < config.data.length; i++) this.addData(config.data[i]);
+    this.update();
   };
 
   views.StatusBar = function() {
@@ -475,6 +481,7 @@ var Exemplar = function() {
       toggles:  ['status-bar', 'navigation-bar', 'content-view', 'toolbar', 'tab-bar', 'keyboard'],
       required: {'content-view': true}
     });
+    this.update();
   };
 
   views.WindowSet = function(config) {
@@ -525,8 +532,11 @@ var Exemplar = function() {
     });
     this.__defineGetter__("scale", function() { return scale; });
 
-    this.addElement(windowSet);
-    windowSet.update();
+    var self = this;
+    self.addElement(windowSet);
+    // Sizes are messed if the elements aren't on the dom when created
+    for (var i = 0; i < windowSet.dataViews.length; i++)
+      windowSet.dataViews[i].update();
 
     this.save = function() {
       document.cookie = "exemplar=" + encodeURIComponent($.toJSON(windowSet.config));

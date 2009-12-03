@@ -1,5 +1,5 @@
 $(function() {
 
-  new Exemplar;
+    new Exemplar;
 
 });
