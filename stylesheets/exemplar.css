@@ -11,7 +11,7 @@ h1 {
   font-size: 130%; }
 
 /* Interface styling */
-#inspector, #canvas, #toolbar {
+#inspector, #toolbar {
   position: fixed; }
 
 #inspector {
@@ -22,10 +22,12 @@ h1 {
   min-height: 20px;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 100;
+  right: 10px;
+  top: 10px;
   padding: 10px 12px 14px 12px; }
   #inspector hr {
     border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.8); }
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3); }
   #inspector label {
     text-shadow: 0px -1px 2px rgba(0, 0, 0, 1.0);
     color: #fff;
@@ -103,13 +105,8 @@ h1 {
   /* Grouped Table */
   /* Tab Bar */ }
   #canvas .application {
-    position: fixed;
-    left: 200px;
-    top: 30px;
-    border: 1px dashed rgba(0, 0, 0, 0.1);
     white-space: nowrap; }
   #canvas .window-set {
-    min-width: 1080px;
     white-space: nowrap; }
     #canvas .window-set > .title {
       color: #333;

@@ -76,7 +76,7 @@ h1
 /* Interface styling */
 
 
-#inspector, #canvas, #toolbar
+#inspector, #toolbar
   :position fixed
 
 #inspector
@@ -85,12 +85,13 @@ h1
   +min-rect(120px, 20px)
   :background-color rgba(0, 0, 0, 0.7)
   :z-index 100
-  
+  :right 10px
+  :top 10px
   :padding 10px 12px 14px 12px
   
   hr
     :border none
-    :border-bottom 1px solid rgba(0, 0, 0, 0.8)
+    :border-bottom 1px solid rgba(0, 0, 0, 0.3)
   
   label
     +light-shadowed-text
@@ -162,14 +163,9 @@ h1
 
 #canvas
   .application
-    :position fixed
-    :left 200px
-    :top 30px
-    :border 1px dashed rgba(0, 0, 0, 0.1)
     :white-space nowrap
 
   .window-set 
-    :min-width 1080px
     :white-space nowrap
     > .title
       :color #333

@@ -193,12 +193,12 @@ var Exemplar = function(saveData) {
         duplicator.show();
         
         remover.css({
-          left: view.$.offset().left - 16,
-          top: view.$.offset().top - 16
+          left: view.$.offset().left - 16 - $(document).scrollLeft(),
+          top: view.$.offset().top - 16 - $(document).scrollTop()
         });
         duplicator.css({
-          left: view.$.offset().left + (view.$.outerWidth() * app.scale) - 14,
-          top: view.$.offset().top - 16
+          left: view.$.offset().left + (view.$.outerWidth() * app.scale) - 14 - $(document).scrollLeft(),
+          top: view.$.offset().top - 16 - $(document).scrollTop()
         });
 
         remover.unbind('click');
@@ -657,7 +657,7 @@ var Exemplar = function(saveData) {
 
     var scale = 1.0;
 
-    this.$.draggable();
+    //this.$.draggable();
 
     this.__defineSetter__("scale", function(val) {
       val = parseFloat(val);
@@ -691,7 +691,7 @@ var Exemplar = function(saveData) {
      */
     var Inspector = function() {
       this.__proto__ = new Element('inspector', null, root);
-      this.$.draggable({containment: '#canvas'});
+      //this.$.draggable({containment: '#canvas'});
 
       var view;
       var selector = $("<div id='selector'></div>");
