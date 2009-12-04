@@ -472,7 +472,16 @@ var Exemplar = function(saveData) {
   };
 
   views.TextView = function(config) {
-    this.__proto__ = new views.View('text-view', config);
+    this.__proto__ = new views.View('text-view', $.extend({
+      labels: {"lorem > .title": "Lorem Ipsum"}
+    }, config), {
+      labels: ['lorem > .title'],
+      options: {style: ['normal', 'rounded']},
+      autoSize: true
+    });
+    
+    this.$.append("<div class='lorem'><div class='title'></div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempor cursus molestie. Praesent metus elit, semper vitae venenatis non, porttitor quis massa. Integer eget mi tempus ipsum tempor porta. Vivamus sed urna quam.</div>");
+    this.update();
   };
 
   views.TableViewSearch = function(config) {
@@ -544,7 +553,7 @@ var Exemplar = function(saveData) {
    */
   views.ContentView = function(config) {
     this.__proto__ = new views.View('content-view', config, {
-      toggles: ['content-view', 'table-view'],
+      toggles: ['text-view', 'table-view'],
       autoSize: true
     });
   };

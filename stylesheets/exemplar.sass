@@ -187,6 +187,29 @@ h1
     :background #eee
     :float left
     :margin 20px
+    :white-space word-wrap
+
+  .text-view
+    :overflow hidden
+    :background white
+    .lorem
+      .title
+        :font-size 14pt
+        :font-weight bold
+        :margin 0 0 5px 0
+      :background white
+      :padding 9px
+      :text-align left
+      :color #000
+      :font-size 12pt
+      :white-space normal
+
+  .text-view.rounded
+    :background url(../images/grouped-table-bg.png)
+    .lorem
+      +rounded
+      :border 1px solid rgba(30, 60, 120, 0.6)
+      :margin 6px
 
   .navigation-bar
     :border-bottom 1px solid #2d3642
@@ -395,7 +418,7 @@ h1
   /* Grouped Table */
 
   .table-view.grouped-table
-    background: url(../images/grouped-table-bg.png)
+    :background url(../images/grouped-table-bg.png)
 
     .table-view-header, .table-view-footer
       margin-top: 7px

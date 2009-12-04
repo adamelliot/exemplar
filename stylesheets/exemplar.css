@@ -125,7 +125,29 @@ h1 {
     overflow: none;
     background: #eee;
     float: left;
-    margin: 20px; }
+    margin: 20px;
+    white-space: word-wrap; }
+  #canvas .text-view {
+    overflow: hidden;
+    background: white; }
+    #canvas .text-view .lorem {
+      background: white;
+      padding: 9px;
+      text-align: left;
+      color: #000;
+      font-size: 12pt;
+      white-space: normal; }
+      #canvas .text-view .lorem .title {
+        font-size: 14pt;
+        font-weight: bold;
+        margin: 0 0 5px 0; }
+  #canvas .text-view.rounded {
+    background: url(../images/grouped-table-bg.png); }
+    #canvas .text-view.rounded .lorem {
+      -webkit-border-radius: 8px;
+      -moz-border-radius: 8px;
+      border: 1px solid rgba(30, 60, 120, 0.6);
+      margin: 6px; }
   #canvas .navigation-bar {
     border-bottom: 1px solid #2d3642; }
   #canvas .navigation-bar, #canvas .toolbar {
