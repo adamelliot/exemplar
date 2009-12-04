@@ -106,9 +106,10 @@ h1 {
     position: fixed;
     left: 200px;
     top: 30px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
     white-space: nowrap; }
   #canvas .window-set {
-    min-width: 720px;
+    min-width: 1080px;
     white-space: nowrap; }
     #canvas .window-set > .title {
       color: #333;

@@ -39,7 +39,7 @@ var Exemplar = function(saveData) {
   
   // This collection is used to dynamically create view objects.
   var views = {};
-  var interface, remover, duplicator;
+  var interface, remover, duplicator, app;
 
   /**
    * Draws an arrow in a canvas element from one point to another and returns
@@ -139,6 +139,7 @@ var Exemplar = function(saveData) {
     builder.types     = builder.types     || {};
     builder.toggles   = builder.toggles   || [];
     builder.labels    = builder.labels    || [];
+    builder.configs   = builder.configs   || {};
     builder.required  = builder.required  || {};
     builder.options   = builder.options   || {};
     
@@ -195,7 +196,7 @@ var Exemplar = function(saveData) {
           top: view.$.offset().top - 16
         });
         duplicator.css({
-          left: view.$.offset().left + view.$.outerWidth() - 16,
+          left: view.$.offset().left + (view.$.outerWidth() * app.scale) - 14,
           top: view.$.offset().top - 16
         });
 
@@ -209,7 +210,7 @@ var Exemplar = function(saveData) {
 
         duplicator.unbind('click');
         duplicator.click(function(event) {
-          self.addData($.extend({}, view.config));
+          self.addData($.extend(true, {}, view.config));
           remover.hide();
           duplicator.hide();
           event.stopPropagation();
@@ -333,7 +334,7 @@ var Exemplar = function(saveData) {
             
             if (type) {
               changedViews = true;
-              var view = subviews[name] = new type(config.configs[name]);
+              var view = subviews[name] = new type(config.configs[name] || builder.configs[name]);
               config.configs[name] = view.config;
               view.parent = self;
               if (className != name) view.$.addClass(name);
@@ -372,6 +373,12 @@ var Exemplar = function(saveData) {
         set = builder.options[i];
         for (var j = 0; j < set.length; j++) this.$.removeClass(set[j]);
         this.$.addClass(config.options[i] || set[0] || "");
+      }
+      
+      if (builder.customClasses === true && config.classes) {
+        var classes = config.classes.split(" ");
+        for (var i = 0; i < classes.length; i++)
+          this.$.addClass(classes[i]);
       }
 
       // Only horizontally size inline-block elements
@@ -432,15 +439,19 @@ var Exemplar = function(saveData) {
   
   views.NavigationBar = function(config) {
     this.__proto__ = new views.View('navigation-bar', $.extend({
+      toggles: {edit: true},
+      labels:  {title: 'New Screen'}
+    }, config), {
       configs: {
+        back: {
+          options: {style: 'back-button'},
+          labels: {title: 'Back'}
+        },
         edit: {
           options: {style: 'done-button'},
           labels: {title: 'Edit'}
         }
       },
-      toggles: {edit: true},
-      labels:  {title: 'New Screen'}
-    }, config), {
       types:   {back: 'toolbar-button', edit: 'toolbar-button'},
       toggles: ['back', 'edit'],
       labels:  ['title']
@@ -457,6 +468,7 @@ var Exemplar = function(saveData) {
       dataType: 'scope-bar-button',
       autoSizeData: true
     });
+    this.update();
   };
 
   views.ScopeBarButton = function(config) {
@@ -489,6 +501,14 @@ var Exemplar = function(saveData) {
     this.$.append("<input type='search' placeholder='Search' autosave='iphone' results='5' disabled='disabled' />");
   };
   
+  views.CustomView = function(config) {
+    this.__proto__ = new views.View('custom-view', config, {
+      customClasses: true,
+      autoSize: true
+    });
+    this.update();
+  };
+  
   views.TableViewGroup = function(config) {
     this.__proto__ = new views.View('table-view-group', $.extend({
       data: [{}, {}],
@@ -518,7 +538,8 @@ var Exemplar = function(saveData) {
       options: {
         disclosure: ['disclosure', 'no-disclosure'],
         style: ['simple', 'complex']
-      }
+      },
+      customClasses: true
     });
 
     this.$.append("<div class='disclosure'></div>");
@@ -553,7 +574,7 @@ var Exemplar = function(saveData) {
    */
   views.ContentView = function(config) {
     this.__proto__ = new views.View('content-view', config, {
-      toggles: ['text-view', 'table-view'],
+      toggles: ['text-view', 'table-view', 'custom-view'],
       autoSize: true
     });
   };
@@ -791,6 +812,17 @@ var Exemplar = function(saveData) {
           drawLabels.call(self, view, view.builder.labels);
           drawToggles.call(self, view, view.builder.toggles, view.builder.required);
           drawOptions.call(self, view, view.builder.options);
+          
+          if (view.builder.customClasses === true) {
+            var input = $("<input type='text' placeholder='custom classes' />");
+            input.val(view.config.classes || "")
+
+            input.keyup(function() {
+              view.config.classes = $(this).val();
+              view.update();
+            });
+          }
+          self.$.append(input);
 
           if (views[(view.builder.dataType || "").camelize()]) {
             var input = $("<button>Add " + view.builder.dataType.humanize() + "</button>");
@@ -892,7 +924,7 @@ var Exemplar = function(saveData) {
     if (cookies.exemplar)
       config = $.evalJSON(cookies.exemplar);
 
-    application = new views.Application(config);
+    app = application = new views.Application(config);
     canvas.addElement(application);
     application.update();
   };

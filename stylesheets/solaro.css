@@ -1,0 +1,17 @@
+.discussion {
+  background-color: white;
+  background-image: url(../images/discussion.png);
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+}
+
+.avatar {
+  background-color: white;
+  background-image: url(../images/avatar.png);
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+}
+
+.note {
+  background-color: #ffc !important;
+}
