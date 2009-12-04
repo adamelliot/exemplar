@@ -917,7 +917,7 @@ var Exemplar = function(saveData) {
       cookies[pair[0]] = decodeURIComponent(pair[1]);
     }
 
-    if (saveData)
+    if (saveData && (cookies.exemplar == '' || cookies.exemplar == undefined))
       cookies.exemplar = decodeURIComponent(saveData);
 
     var config;
