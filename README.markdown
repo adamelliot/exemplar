@@ -2,6 +2,8 @@
 
 Currently it's pretty alpha, but it works. Data is saved to a cookie for now, it will eventually sit on a small Sintra app with DataMapper db.
 
+The code is a bit of mess right now, but the app works.
+
 ## Upcoming features
 
 - Sintra + DataMapper Backend

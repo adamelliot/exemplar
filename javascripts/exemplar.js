@@ -1,8 +1,9 @@
 /**
  * Jupiter how I miss you; a lovely glow has alway consumed me.
  * 
- * BTW: This code will work in modern browsers (Gecko 1.9.1+, Webkit 532+)
- * it's not meant to be backwards compatible, lets levereage new tech K?
+ * BTW: This code will only work in webkit (Chrome / Safar 4). It leverages
+ * lots of the css extensions they've added. It's not meant to be a widely
+ * view site. Just a tool to help you lay out your code.
  * 
  * Copyright (c) 2009 Adam Elliot
  */
