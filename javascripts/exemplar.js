@@ -35,11 +35,11 @@ String.prototype.humanize = function() {
   });
 };
 
-var Exemplar = function() {
+var Exemplar = function(saveData) {
   
   // This collection is used to dynamically create view objects.
   var views = {};
-  var interface, remover;
+  var interface, remover, duplicator;
 
   /**
    * Draws an arrow in a canvas element from one point to another and returns
@@ -188,8 +188,14 @@ var Exemplar = function() {
 
       view.$.mouseover(function(event) {
         remover.show();
+        duplicator.show();
+        
         remover.css({
           left: view.$.offset().left - 16,
+          top: view.$.offset().top - 16
+        });
+        duplicator.css({
+          left: view.$.offset().left + view.$.outerWidth() - 16,
           top: view.$.offset().top - 16
         });
 
@@ -197,18 +203,29 @@ var Exemplar = function() {
         remover.click(function(event) {
           self.removeData(view);
           remover.hide();
+          duplicator.hide();
           event.stopPropagation();
         })
-        
+
+        duplicator.unbind('click');
+        duplicator.click(function(event) {
+          self.addData($.extend({}, view.config));
+          remover.hide();
+          duplicator.hide();
+          event.stopPropagation();
+        })
+
         event.stopPropagation();
       });
       
       view.$.mousedown(function() {
         remover.hide();
+        duplicator.hide();
       });
 
       view.$.mouseout(function(event) {
         remover.hide();
+        duplicator.hide();
         event.stopPropagation();
       });
 
@@ -421,7 +438,7 @@ var Exemplar = function() {
           labels: {title: 'Edit'}
         }
       },
-      toggles: {back: true},
+      toggles: {edit: true},
       labels:  {title: 'New Screen'}
     }, config), {
       types:   {back: 'toolbar-button', edit: 'toolbar-button'},
@@ -430,7 +447,6 @@ var Exemplar = function() {
     });
 
     this.$.append("<div class='title'>?</div>");
-
     this.update();
   };
 
@@ -453,10 +469,6 @@ var Exemplar = function() {
 
     this.$.append("<div class='title'></div>");
     this.update();
-  };
-
-  views.TextView = function(config) {
-    this.__proto__ = new views.View('text-view', config);
   };
 
   views.TextView = function(config) {
@@ -536,10 +548,27 @@ var Exemplar = function() {
       autoSize: true
     });
   };
-  
+
+  views.TabBarButton = function(config) {
+    this.__proto__ = new views.View('tab-bar-button', $.extend({
+      labels: {title: 'Tab'},
+      options: {icon: 'star'}
+    }, config), {
+      labels: ['title'],
+      options: {icon: ['add', 'bookmark', 'book', 'clock', 'inbox', 'palette', 'search', 'settings', 'star']}
+    });
+
+    this.$.append("<div class='icon'></div>");
+    this.$.append("<div class='title'></div>");
+    this.update();
+  };
+
   views.TabBar =  function(config) {
-    this.__proto__ = new views.View('tab-bar', config, {
-      dataType: 'tab-bar-button'
+    this.__proto__ = new views.View('tab-bar', $.extend({
+        data: [{}, {}]
+      }, config), {
+      dataType: 'tab-bar-button',
+      autoSizeData: true
     });
   };
 
@@ -611,7 +640,10 @@ var Exemplar = function() {
 
     var self = this;
     this.save = function() {
-      document.cookie = "exemplar=" + encodeURIComponent($.toJSON(self.config));
+      var date = new Date();
+      date.setTime(date.getTime() + (24 * 60 * 60 * 1000 * 365));
+      var expires = "; expires=" + date.toGMTString();
+      document.cookie = "exemplar=" + encodeURIComponent($.toJSON(self.config)) + expires;
     };
   };
 
@@ -632,16 +664,23 @@ var Exemplar = function() {
 
       var view;
       var selector = $("<div id='selector'></div>");
+
       remover = $("<div id='remove_button'></div>");
+      duplicator = $("<div id='duplicate_button'></div>");
 
       $(root).append(selector);
       $(root).append(remover);
+      $(root).append(duplicator);
 
       selector.hide();
       remover.hide();
+      duplicator.hide();
       
       remover.mouseover(function() {
         remover.show();
+      });
+      duplicator.mouseover(function() {
+        duplicator.show();
       });
       
       var baseNumber = 0;
@@ -663,7 +702,7 @@ var Exemplar = function() {
             return function() {
               view.config.labels[name] = $(this).val();
               view.update();
-            }; 
+            };
           })());
 
           if (view.config.labels[labels[i]] !== undefined)
@@ -836,6 +875,9 @@ var Exemplar = function() {
       var pair = data[i].split("=");
       cookies[pair[0]] = decodeURIComponent(pair[1]);
     }
+
+    if (saveData)
+      cookies.exemplar = decodeURIComponent(saveData);
 
     var config;
     if (cookies.exemplar)

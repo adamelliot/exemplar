@@ -149,6 +149,15 @@ h1
   &:active
     :background url(../images/remove-button-pressed.png)
 
+#duplicate_button
+  :background url(../images/duplicate-button.png)
+  :position fixed
+  :width 30px
+  :height 30px
+  &:active
+    :background url(../images/duplicate-button-pressed.png)
+
+
 /* iPhone Elements */  
 
 #canvas
@@ -160,7 +169,7 @@ h1
     :white-space nowrap
 
   .window-set 
-    :min-width 1800px
+    :min-width 720px
     :white-space nowrap
     > .title
       :color #333
@@ -420,3 +429,43 @@ h1
     +shiney-background-gradient(#2e2e2e, #151515, #000000, #000000)
     :height 48px
     :border-top 1px solid #434343
+  
+  .tab-bar-button 
+    +light-bezeled-text(#aaa, rgba(0, 0, 0, 0.8))
+    :font-size 10px
+    :font-weight normal
+    :display inline-block
+
+    .icon
+      :display inline-block
+      :height 32px
+      :width 32px
+      :background-repeat no-repeat
+      :background-position 50% 50%
+
+    &.add > .icon
+      :background-image url(../images/icon-add.png)
+
+    &.book > .icon
+      :background-image url(../images/icon-book.png)
+
+    &.bookmark > .icon
+      :background-image url(../images/icon-bookmark.png)
+
+    &.clock > .icon
+      :background-image url(../images/icon-clock.png)
+
+    &.inbox > .icon
+      :background-image url(../images/icon-inbox.png)
+    
+    &.palette > .icon
+      :background-image url(../images/icon-palette.png)
+
+    &.search > .icon
+      :background-image url(../images/icon-search.png)
+
+    &.settings > .icon
+      :background-image url(../images/icon-settings.png)
+
+    &.star > .icon
+      :background-image url(../images/icon-star.png)

@@ -86,6 +86,14 @@ h1 {
   #remove_button:active {
     background: url(../images/remove-button-pressed.png); }
 
+#duplicate_button {
+  background: url(../images/duplicate-button.png);
+  position: fixed;
+  width: 30px;
+  height: 30px; }
+  #duplicate_button:active {
+    background: url(../images/duplicate-button-pressed.png); }
+
 /* iPhone Elements */
 #canvas {
   /* Toolbar Button */
@@ -100,7 +108,7 @@ h1 {
     top: 30px;
     white-space: nowrap; }
   #canvas .window-set {
-    min-width: 1800px;
+    min-width: 720px;
     white-space: nowrap; }
     #canvas .window-set > .title {
       color: #333;
@@ -324,3 +332,34 @@ h1 {
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#2e2e2e), to(black), color-stop( 0.5, #151515 ), color-stop( 0.5, black ) );
     height: 48px;
     border-top: 1px solid #434343; }
+  #canvas .tab-bar-button {
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.8);
+    color: #aaaaaa;
+    text-align: center;
+    font-size: 10px;
+    font-weight: normal;
+    display: inline-block; }
+    #canvas .tab-bar-button .icon {
+      display: inline-block;
+      height: 32px;
+      width: 32px;
+      background-repeat: no-repeat;
+      background-position: 50% 50%; }
+    #canvas .tab-bar-button.add > .icon {
+      background-image: url(../images/icon-add.png); }
+    #canvas .tab-bar-button.book > .icon {
+      background-image: url(../images/icon-book.png); }
+    #canvas .tab-bar-button.bookmark > .icon {
+      background-image: url(../images/icon-bookmark.png); }
+    #canvas .tab-bar-button.clock > .icon {
+      background-image: url(../images/icon-clock.png); }
+    #canvas .tab-bar-button.inbox > .icon {
+      background-image: url(../images/icon-inbox.png); }
+    #canvas .tab-bar-button.palette > .icon {
+      background-image: url(../images/icon-palette.png); }
+    #canvas .tab-bar-button.search > .icon {
+      background-image: url(../images/icon-search.png); }
+    #canvas .tab-bar-button.settings > .icon {
+      background-image: url(../images/icon-settings.png); }
+    #canvas .tab-bar-button.star > .icon {
+      background-image: url(../images/icon-star.png); }
