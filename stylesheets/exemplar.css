@@ -18,6 +18,7 @@ h1 {
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
   -webkit-box-shadow: 0px 2px 6px rgba(32, 32, 32, 0.6);
+  -moz-box-shadow: 0px 2px 6px rgba(32, 32, 32, 0.6);
   min-width: 120px;
   min-height: 20px;
   background-color: rgba(0, 0, 0, 0.7);
@@ -118,6 +119,7 @@ h1 {
       font: "Lucida Grande"; }
   #canvas .window {
     -webkit-box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5);
     width: 320px;
     height: 480px;
     overflow: none;
@@ -186,7 +188,7 @@ h1 {
     border-bottom: 1px solid #2d3642; }
   #canvas .toolbar {
     height: 42px;
-    padding: 0 8px; }
+    padding: 0; }
   #canvas .keyboard {
     background: url(../images/keyboard.png);
     width: 320px;
@@ -195,18 +197,51 @@ h1 {
     height: 27px;
     line-height: 27px;
     padding: 0 6px;
-    float: left; }
+    display: inline-block; }
+    #canvas .toolbar-button > .title {
+      display: none; }
+    #canvas .toolbar-button.no-icon > .title {
+      display: inline-block !important; }
+    #canvas .toolbar-button.no-icon > .icon {
+      display: none !important; }
+    #canvas .toolbar-button > .icon {
+      display: inline-block; }
+    #canvas .toolbar-button .icon {
+      display: inline-block;
+      height: 29px;
+      width: 29px;
+      background-repeat: no-repeat;
+      background-position: 50% 50%; }
+    #canvas .toolbar-button.add > .icon {
+      background-image: url(../images/toolbar-icon-add.png); }
+    #canvas .toolbar-button.book > .icon {
+      background-image: url(../images/toolbar-icon-book.png); }
+    #canvas .toolbar-button.bookmark > .icon {
+      background-image: url(../images/toolbar-icon-bookmark.png); }
+    #canvas .toolbar-button.clock > .icon {
+      background-image: url(../images/toolbar-icon-clock.png); }
+    #canvas .toolbar-button.inbox > .icon {
+      background-image: url(../images/toolbar-icon-inbox.png); }
+    #canvas .toolbar-button.palette > .icon {
+      background-image: url(../images/toolbar-icon-palette.png); }
+    #canvas .toolbar-button.search > .icon {
+      background-image: url(../images/toolbar-icon-search.png); }
+    #canvas .toolbar-button.settings > .icon {
+      background-image: url(../images/toolbar-icon-settings.png); }
+    #canvas .toolbar-button.star > .icon {
+      background-image: url(../images/toolbar-icon-star.png); }
   #canvas .bordered-button, #canvas .done-button {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     -webkit-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
+    -moz-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
     text-shadow: 0px -1px 0px #555555;
     color: white;
     text-align: center;
     margin: 6px;
     padding: 0 8px;
-    min-width: 30px;
+    min-width: 20px;
     font-size: 13px; }
   #canvas .bordered-button {
     background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#8ea4c1), to(#4a6c9b), color-stop( 0.5, #5777a2 ), color-stop( 0.5, #476999 ) ); }
@@ -234,6 +269,7 @@ h1 {
   #canvas .scope-bar-button {
     border: 1px solid rgba(60, 75, 100, 0.6);
     -webkit-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
+    -moz-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
     border-right-style: none;
     height: 27px;
     line-height: 27px;
@@ -256,10 +292,14 @@ h1 {
     text-align: center; }
   #canvas .scope-bar-button.first {
     -webkit-border-top-left-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px; }
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-top-left-radius: 5px;
+    -moz-border-bottom-left-radius: 5px; }
   #canvas .scope-bar-button.last {
     -webkit-border-top-right-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
+    -moz-border-top-right-radius: 5px;
+    -moz-border-bottom-right-radius: 5px;
     border-right-style: solid; }
   #canvas .table-view-search {
     height: 42px;
@@ -306,7 +346,8 @@ h1 {
   #canvas .table-view.plain-table {
     background: url(../images/table-bg.png); }
     #canvas .table-view.plain-table .table-view-group {
-      -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3); }
+      -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+      -moz-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3); }
     #canvas .table-view.plain-table .table-view-header, #canvas .table-view.plain-table .table-view-footer {
       background: -webkit-gradient( linear, 0% 0%, 0% 100%, from(#909faa), to(#b8c1c8) );
       color: #fff;
@@ -336,11 +377,15 @@ h1 {
     #canvas .table-view.grouped-table .table-view-group > .table-view-cell.first {
       -webkit-border-top-left-radius: 14px;
       -webkit-border-top-right-radius: 14px;
+      -moz-border-top-left-radius: 14px;
+      -moz-border-top-right-radius: 14px;
       margin-top: 7px;
       border-top: 1px solid #aaa; }
     #canvas .table-view.grouped-table .table-view-group > .table-view-cell.last {
       -webkit-border-bottom-left-radius: 14px;
       -webkit-border-bottom-right-radius: 14px;
+      -moz-border-bottom-left-radius: 14px;
+      -moz-border-bottom-right-radius: 14px;
       margin-bottom: 7px; }
     #canvas .table-view.grouped-table .table-view-cell {
       margin-left: 10px;
@@ -366,20 +411,20 @@ h1 {
       background-repeat: no-repeat;
       background-position: 50% 50%; }
     #canvas .tab-bar-button.add > .icon {
-      background-image: url(../images/icon-add.png); }
+      background-image: url(../images/tab-icon-add.png); }
     #canvas .tab-bar-button.book > .icon {
-      background-image: url(../images/icon-book.png); }
+      background-image: url(../images/tab-icon-book.png); }
     #canvas .tab-bar-button.bookmark > .icon {
-      background-image: url(../images/icon-bookmark.png); }
+      background-image: url(../images/tab-icon-bookmark.png); }
     #canvas .tab-bar-button.clock > .icon {
-      background-image: url(../images/icon-clock.png); }
+      background-image: url(../images/tab-icon-clock.png); }
     #canvas .tab-bar-button.inbox > .icon {
-      background-image: url(../images/icon-inbox.png); }
+      background-image: url(../images/tab-icon-inbox.png); }
     #canvas .tab-bar-button.palette > .icon {
-      background-image: url(../images/icon-palette.png); }
+      background-image: url(../images/tab-icon-palette.png); }
     #canvas .tab-bar-button.search > .icon {
-      background-image: url(../images/icon-search.png); }
+      background-image: url(../images/tab-icon-search.png); }
     #canvas .tab-bar-button.settings > .icon {
-      background-image: url(../images/icon-settings.png); }
+      background-image: url(../images/tab-icon-settings.png); }
     #canvas .tab-bar-button.star > .icon {
-      background-image: url(../images/icon-star.png); }
+      background-image: url(../images/tab-icon-star.png); }

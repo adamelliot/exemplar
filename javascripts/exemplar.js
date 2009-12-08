@@ -36,11 +36,13 @@ String.prototype.humanize = function() {
   });
 };
 
-var Exemplar = function(saveData) {
+var Exemplar = function(saveName, saveData) {
   
   // This collection is used to dynamically create view objects.
   var views = {};
   var interface, remover, duplicator, app;
+
+  saveName = saveName || 'exemplar';
 
   /**
    * Draws an arrow in a canvas element from one point to another and returns
@@ -611,13 +613,17 @@ var Exemplar = function(saveData) {
   
   views.ToolbarButton = function(config) {
     this.__proto__ = new views.View('toolbar-button', $.extend({
-      labels: {title: "?"}
+      labels: {title: ""}
     }, config), {
       labels: ['title'],
-      options: {style: ['plain-button', 'bordered-button', 'done-button', 'back-button']}
+      options: {
+        style: ['plain-button', 'bordered-button', 'done-button', 'back-button'],
+        icon: ['no-icon', 'add', 'bookmark', 'book', 'clock', 'inbox', 'palette', 'search', 'settings', 'star']
+      }
     });
 
     this.$.append("<div class='title'></div>");
+    this.$.append("<div class='icon'></div>");
     this.update();
   };
   
@@ -674,7 +680,7 @@ var Exemplar = function(saveData) {
       var date = new Date();
       date.setTime(date.getTime() + (24 * 60 * 60 * 1000 * 365));
       var expires = "; expires=" + date.toGMTString();
-      document.cookie = "exemplar=" + encodeURIComponent($.toJSON(self.config)) + expires;
+      document.cookie = saveName + "=" + encodeURIComponent($.toJSON(self.config)) + expires;
     };
   };
 
@@ -874,7 +880,7 @@ var Exemplar = function(saveData) {
 
       reset.click(function() {
         if (confirm("This will clear all your data, are you sure?")) {
-          document.cookie = 'exemplar=';
+          document.cookie = saveName + '=';
           location.reload();
         }
       });
@@ -918,12 +924,12 @@ var Exemplar = function(saveData) {
       cookies[pair[0]] = decodeURIComponent(pair[1]);
     }
 
-    if (saveData && (cookies.exemplar == '' || cookies.exemplar == undefined))
-      cookies.exemplar = decodeURIComponent(saveData);
+    if (saveData && (cookies[saveName] == '' || cookies[saveName] == undefined))
+      cookies[saveName] = decodeURIComponent(saveData);
 
     var config;
-    if (cookies.exemplar)
-      config = $.evalJSON(cookies.exemplar);
+    if (cookies[saveName])
+      config = $.evalJSON(cookies[saveName]);
 
     app = application = new views.Application(config);
     canvas.addElement(application);

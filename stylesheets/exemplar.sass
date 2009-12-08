@@ -5,25 +5,35 @@
 =rounded-top(!radius = 14px)
   :-webkit-border-top-left-radius = !radius
   :-webkit-border-top-right-radius = !radius
+  :-moz-border-top-left-radius = !radius
+  :-moz-border-top-right-radius = !radius
 
 =rounded-bottom(!radius = 14px)
   :-webkit-border-bottom-left-radius = !radius
   :-webkit-border-bottom-right-radius = !radius
+  :-moz-border-bottom-left-radius = !radius
+  :-moz-border-bottom-right-radius = !radius
 
 =rounded-left(!radius = 14px)
   :-webkit-border-top-left-radius = !radius
   :-webkit-border-bottom-left-radius = !radius
+  :-moz-border-top-left-radius = !radius
+  :-moz-border-bottom-left-radius = !radius
 
 =rounded-right(!radius = 14px)
   :-webkit-border-top-right-radius = !radius
   :-webkit-border-bottom-right-radius = !radius
+  :-moz-border-top-right-radius = !radius
+  :-moz-border-bottom-right-radius = !radius
 
 =box-shadow(!distance = 1px, !radius = 5px, !color = 32, !alpha = 0.6)
   :-webkit-box-shadow = 0px !distance !radius rgba(!color, !color, !color, !alpha)
+  :-moz-box-shadow = 0px !distance !radius rgba(!color, !color, !color, !alpha)
 
 =box-bezel(!color = rgba(0, 0, 0, 0.4))
   :border = 1px "solid" !color
   :-webkit-box-shadow = 0px 1px 1px rgba(255, 255, 255, 0.4)
+  :-moz-box-shadow = 0px 1px 1px rgba(255, 255, 255, 0.4)
 
 =background-gradient(!from = #b0bccd, !to = #6d84a2)
   :background = "-webkit-gradient(""linear", 0% 0%, 0% 100%, from(!from), to(!to)")"
@@ -251,7 +261,7 @@ h1
 
   .toolbar
     height: 42px
-    padding: 0 8px
+    padding: 0
 
   .keyboard
     background: url(../images/keyboard.png)
@@ -264,15 +274,62 @@ h1
     :height 27px
     :line-height 27px
     :padding 0 6px
-    :float left
+    :display inline-block
     
+    > .title
+      :display none
+
+    &.no-icon > .title
+      :display inline-block !important
+
+    &.no-icon > .icon
+      :display none !important
+
+    > .icon
+      :display inline-block
+
+    .icon
+      :display inline-block
+      :height 29px
+      :width 29px
+      :background-repeat no-repeat
+      :background-position 50% 50%
+
+    &.add > .icon
+      :background-image url(../images/toolbar-icon-add.png)
+
+    &.book > .icon
+      :background-image url(../images/toolbar-icon-book.png)
+
+    &.bookmark > .icon
+      :background-image url(../images/toolbar-icon-bookmark.png)
+
+    &.clock > .icon
+      :background-image url(../images/toolbar-icon-clock.png)
+
+    &.inbox > .icon
+      :background-image url(../images/toolbar-icon-inbox.png)
+    
+    &.palette > .icon
+      :background-image url(../images/toolbar-icon-palette.png)
+
+    &.search > .icon
+      :background-image url(../images/toolbar-icon-search.png)
+
+    &.settings > .icon
+      :background-image url(../images/toolbar-icon-settings.png)
+
+    &.star > .icon
+      :background-image url(../images/toolbar-icon-star.png)
+
+
   .bordered-button, .done-button
     +rounded(4px)
     +box-bezel
     +light-bezeled-text
     :margin 6px
     :padding 0 8px
-    :min-width 30px
+    :min-width 20px
     :font-size 13px
 
   .bordered-button
@@ -463,28 +520,28 @@ h1
       :background-position 50% 50%
 
     &.add > .icon
-      :background-image url(../images/icon-add.png)
+      :background-image url(../images/tab-icon-add.png)
 
     &.book > .icon
-      :background-image url(../images/icon-book.png)
+      :background-image url(../images/tab-icon-book.png)
 
     &.bookmark > .icon
-      :background-image url(../images/icon-bookmark.png)
+      :background-image url(../images/tab-icon-bookmark.png)
 
     &.clock > .icon
-      :background-image url(../images/icon-clock.png)
+      :background-image url(../images/tab-icon-clock.png)
 
     &.inbox > .icon
-      :background-image url(../images/icon-inbox.png)
+      :background-image url(../images/tab-icon-inbox.png)
     
     &.palette > .icon
-      :background-image url(../images/icon-palette.png)
+      :background-image url(../images/tab-icon-palette.png)
 
     &.search > .icon
-      :background-image url(../images/icon-search.png)
+      :background-image url(../images/tab-icon-search.png)
 
     &.settings > .icon
-      :background-image url(../images/icon-settings.png)
+      :background-image url(../images/tab-icon-settings.png)
 
     &.star > .icon
-      :background-image url(../images/icon-star.png)
+      :background-image url(../images/tab-icon-star.png)
